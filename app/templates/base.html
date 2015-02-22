@@ -1,0 +1,26 @@
+<html>
+  <head>
+    {% if title %}
+    <title>{{ title }} - RIS</title>
+    {% else %}
+    <title>Welcome to RIS</title>
+    {% endif %}
+  </head>
+  <body>
+    <div>Radiology Info System:
+        <a href="/index">Home</a>
+        <a href="/login">Login</a>
+    </div>
+    <hr>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li>{{ message }} </li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </body>
+</html>
