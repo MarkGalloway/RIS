@@ -7,5 +7,12 @@ SECRET_KEY = 'colin-is-cool'  # nobody will guess
 # Database Config
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-SQLALCHEMY_DATABASE_URI = 'mysql:///' + os.path.join(basedir, 'app.db')
+# SQLALCHEMY_DATABASE_URI = 'sqlite:////' + os.path.join(basedir, 'app.db')
+
+# DB name: risDB
+# username: 'ris_user'
+# password: 'r1s_p4ssw0rd'
+# Server: 45.56.81.81
+
+SQLALCHEMY_DATABASE_URI = 'mysql://ris_user:r1s_p4ssw0rd@45.56.81.81/risDB'
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
