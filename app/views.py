@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect
-from app import app
+from app import app, db
 from .forms.login import LoginForm
 
 
@@ -23,3 +23,11 @@ def login():
     return render_template('login.html',
                            title='Sign In',
                            form=form)
+
+
+@app.route('/testdb')
+def testdb():
+    if db.session.query("1").from_statement("SELECT 1").all():
+        return 'It works.'
+    else:
+        return 'Something is broken.'

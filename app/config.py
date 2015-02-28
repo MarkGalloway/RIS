@@ -14,5 +14,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 # password: 'r1s_p4ssw0rd'
 # Server: 45.56.81.81
 
-SQLALCHEMY_DATABASE_URI = 'mysql://ris_user:r1s_p4ssw0rd@45.56.81.81/risDB'
+# This points to MySQL, set up remotely
+SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://ris_user:r1s_p4ssw0rd@45.56.81.81/risDB'
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+

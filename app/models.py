@@ -4,13 +4,17 @@ from app import db
 class Person(db.Model):
     """To Store Personal Information"""
     __tablename__ = 'persons'
+
+    # Fields
     person_id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.VARCHAR(24))
     last_name = db.Column(db.VARCHAR(24))
     address = db.Column(db.VARCHAR(128))
     email = db.Column(db.VARCHAR(128), unique=True)
     phone = db.Column(db.CHAR(10))
-    users = db.relationship('User', backref='person', lazy='dynamic')
+
+    # Relationships
+    users = db.relationship('User', backref='person')
 
     def __repr__(self):
         return '<Person %r>' % (self.person_id)
@@ -21,47 +25,66 @@ class User(db.Model):
     Note that a person may have been assigned different
     user_name(s), depending on his/her role in the log-in"""
     __tablename__ = 'users'
+
+    # Fields
     user_name = db.Column(db.VARCHAR(24), primary_key=True)
     password = db.Column(db.VARCHAR(24))
     date_registered = db.Column(db.Date)
-    person_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
+    person_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'))
 
     def __repr__(self):
         return '<User %r>' % (self.user_name)
 
 
-class FamilyDoctor(db.Model):
+class Doctor(db.Model):
     """To indicate who is whose family doctor"""
     __tablename__ = 'family_doctor'
-    doctor_id = db.Column(db.Integer, db.ForeignKey('persons.id'), primary_key=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('persons.id'), primary_key=True)
+
+    # Fields
+    doctor_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'), primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'), primary_key=True)
+
+    # Relationships
+    doctor = db.relationship("Person", foreign_keys=[doctor_id], backref="doctor_doctors")
+    patient = db.relationship("Person", foreign_keys=[patient_id], backref="doctor_patients")
 
     def __repr__(self):
-        return '<FamilyDoctor %r>' % (self.doctor_id)
+        return '<FamilyDoctor %r %r>' % (self.doctor_id, self.patient_id)
 
 
-class RadiologyRecord(db.Model):
+class Record(db.Model):
     """To store the radiology records"""
     __tablename__ = 'radiology_record'
+
+    # Fields
     record_id = db.Column(db.Integer, primary_key=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
-    doctor_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
-    radiologist_id = db.Column(db.Integer, db.ForeignKey('persons.id'))
+    patient_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'))
+    doctor_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'))
+    radiologist_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'))
     test_type = db.Column(db.VARCHAR(24))
     prescribing_date = db.Column(db.Date)
     test_date = db.Column(db.Date)
     diagnosis = db.Column(db.VARCHAR(128))
     description = db.Column(db.VARCHAR(1024))
 
+    # Relationships
+    images = db.relationship('Image', backref="record", lazy='dynamic')
+    doctor = db.relationship("Person", foreign_keys=[doctor_id], backref="record_doctor")
+    patient = db.relationship("Person", foreign_keys=[patient_id], backref="record_patient")
+    radiologist = db.relationship("Person", foreign_keys=[radiologist_id], backref="record_radiologist")
+
     def __repr__(self):
         return '<Record %r>' % (self.record_id)
 
 
-class PacsImage(db.Model):
+class Image(db.Model):
     """To store the pacs images"""
     __tablename__ = 'pacs_images'
-    record_id = db.Column(db.Integer, db.ForeignKey('radiology_record.record_id'), primary_key=True)
     image_id = db.Column(db.Integer, primary_key=True)
+    record_id = db.Column(db.Integer, db.ForeignKey('radiology_record.record_id'), primary_key=True)
     thumbnail = db.Column(db.BLOB)
     regular_size = db.Column(db.BLOB)
     full_size = db.Column(db.BLOB)
+
+    def __repr__(self):
+        return '<Pacs Image %r %r>' % (self.image_id, self.record_id)

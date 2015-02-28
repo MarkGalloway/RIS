@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
 # DB object
-db = SQLAlchemy()
+db = SQLAlchemy(app)
 
 # Import Views
 from app import views, models

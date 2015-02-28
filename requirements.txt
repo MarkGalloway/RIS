@@ -5,6 +5,7 @@ Flask-WTF==0.11
 itsdangerous==0.24
 Jinja2==2.7.3
 MarkupSafe==0.23
+mysql-connector-python==2.0.3
 pbr==0.10.7
 six==1.9.0
 SQLAlchemy==0.9.8
