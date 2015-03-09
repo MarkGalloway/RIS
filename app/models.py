@@ -29,6 +29,7 @@ class User(db.Model):
     # Fields
     user_name = db.Column(db.VARCHAR(24), primary_key=True)
     password = db.Column(db.VARCHAR(24))
+    user_class = db.Column('class', db.Enum('a', 'p', 'd', 'r'))
     date_registered = db.Column(db.Date)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'))
 
