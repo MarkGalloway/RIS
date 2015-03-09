@@ -1,6 +1,8 @@
 from flask import render_template, flash, redirect
-from app import app, db
+from app import app, db, models
 from .forms.login import LoginForm
+from .forms.user_management import UserManagementForm
+
 
 
 @app.route('/')
@@ -31,3 +33,18 @@ def testdb():
         return 'It works.'
     else:
         return 'Something is broken.'
+
+@app.route('/user_management', methods=['GET', 'POST'])
+def userManagement():
+    form = UserManagementForm()
+    if form.validate_on_submit():
+        person = models.Person(
+            first_name=form.first_name.data,
+            last_name=form.last_name.data,
+            address=form.address.data,
+            email=form.email.data,
+            phone=form.phone.data
+        )
+        db.session.add(person)
+        db.session.commit()
+    return render_template('create_edit_user.html', form=form)

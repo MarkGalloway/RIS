@@ -1,0 +1,54 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Create or Edit User</h1>
+  <form action="" method="post" name="user_management">
+      {{ form.hidden_tag() }}
+      <p>
+          {{ form.user_name.label }}:<br/>
+          {{ form.user_name(size=24) }}
+          {% for error in form.user_name.errors %}
+            <span style="color: red;">* {{ error }}</span>
+          {% endfor %}<br/>
+      </p>
+      <p>
+          {{ form.password.label }}:<br>
+          {{ form.password(size=24) }}
+          {% for error in form.password.errors %}
+            <span style="color: red;">* {{ error }}</span>
+          {% endfor %}<br/>
+      </p>
+      <p>
+          {{ form.first_name.label }}:<br>
+          {{ form.first_name(size=24) }}
+          {% for error in form.first_name.errors %}
+            <span style="color: red;">* {{ error }}</span>
+          {% endfor %}<br/>
+      </p>
+      <p>
+          {{ form.last_name.label }}:<br>
+          {{ form.last_name(size=24) }}
+          {% for error in form.last_name.errors %}
+            <span style="color: red;">* {{ error }}</span>
+          {% endfor %}<br/>
+      </p>
+      <p>
+          {{ form.address.label }}:<br>
+          {{ form.address(size=128) }}
+      </p>
+      <p>
+          {{ form.email.label }}:<br>
+          {{ form.email(size=128) }}
+      </p>
+      <p>
+          {{ form.phone.label }}:<br>
+          {{ form.phone(size=10) }}
+      </p>
+      <p>
+          {{ form.doctor_id.label }}:<br>
+          {{ form.doctor_id(size=24) }}
+      </p>
+      <p><input type="submit" value="Submit"></p>
+  </form>
+{% endblock %}
