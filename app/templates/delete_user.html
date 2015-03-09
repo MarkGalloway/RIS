@@ -1,0 +1,11 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Delete User: {{ form.user_name.data }} </h1>
+    Are you sure?<br>
+  <form action="" method="post" name="delete_user">
+      {{ form.hidden_tag() }}
+      <p><input type="submit" value="Delete"></p>
+  </form>
+{% endblock %}

@@ -2,7 +2,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>User List</h1>
+  <h1>User List</h1><br>
+    <a href="{{ url_for('add_user') }}">Add User</a>
     <hr>
     {% for user in users %}
         <p>
@@ -21,7 +22,8 @@
             Person ID: {{ user.person_id }}
         </p>
         <p>
-            <a href="{{ url_for('edit_user', userName=user.user_name) }}">edit</a>
+            <a href="{{ url_for('edit_user', userName=user.user_name) }}">Edit</a>
+            | <a href="{{ url_for('delete_user', userName=user.user_name) }}">Delete</a>
         </p>
         <hr>
     {% endfor %}
