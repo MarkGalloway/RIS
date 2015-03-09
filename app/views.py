@@ -1,7 +1,8 @@
-from flask import render_template, flash, redirect
+from datetime import datetime, date
+from flask import render_template, flash, redirect, url_for
 from app import app, db, models
 from .forms.login import LoginForm
-from .forms.user_management import UserManagementForm
+from .forms.user_management import UserForm
 
 
 
@@ -34,17 +35,18 @@ def testdb():
     else:
         return 'Something is broken.'
 
-@app.route('/user_management', methods=['GET', 'POST'])
-def userManagement():
-    form = UserManagementForm()
+@app.route('/edit_user/<userName>', methods=['GET', 'POST'])
+def editUser(userName):
+    user = models.User.query.get_or_404(userName)
+    form = UserForm(obj=user)
     if form.validate_on_submit():
-        person = models.Person(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            address=form.address.data,
-            email=form.email.data,
-            phone=form.phone.data
-        )
-        db.session.add(person)
+        flash(u'Saving data for User {}'.format(form.user_name.data))
+        form.populate_obj(user)
         db.session.commit()
+        flash(u'Data has been saved for User {}'.format(form.user_name.data))
+        return redirect(url_for('index'))
+    else:
+        form.user_name.data = user.user_name
+        form.password.data = user.password
+        form.user_class.data = user.user_class
     return render_template('create_edit_user.html', form=form)

@@ -46,7 +46,9 @@ class Doctor(db.Model):
     patient_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'), primary_key=True)
 
     # Relationships
-    doctor = db.relationship("Person", foreign_keys=[doctor_id], backref="doctor_doctors")
+    doctor = db.relationship("Person",
+                             foreign_keys=[doctor_id],
+                             backref=db.backref("doctor_doctors", lazy='dynamic'))
     patient = db.relationship("Person", foreign_keys=[patient_id], backref="doctor_patients")
 
     def __repr__(self):
