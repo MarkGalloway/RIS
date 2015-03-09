@@ -6,6 +6,7 @@ from wtforms.validators import DataRequired
 class UserForm(Form):
     user_name = StringField('Username', validators=[DataRequired()])
     password = StringField('Password', validators=[DataRequired()])
+    person_id = IntegerField('Person ID', validators=[DataRequired()])
     user_class = SelectField('Class',
                              choices=[('a', 'Administrator'),
                                       ('p', 'Patient'),

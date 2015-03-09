@@ -2,7 +2,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Create or Edit User</h1>
+  <h1>Edit User: {{ form.user_name.data }}</h1>
   <form action="" method="post" name="edit_user">
       {{ form.hidden_tag() }}
       <p>
@@ -20,9 +20,16 @@
           {% endfor %}<br/>
       </p>
       <p>
-          {{ form.user_class.label }}:<br>
+          {{ form.person_id.label }}:<br>
+          {{ form.person_id(size=24) }}
+          {% for error in form.person_id.errors %}
+              <span style="color: red;">* {{ error }}</span>
+          {% endfor %}<br/>
+      </p>
+      <p>
+          {{ form.user_class.label }}:
           {{ form.user_class }}
       </p>
-      <p><input type="submit" value="Submit"></p>
+      <p><input type="submit" value="Save"></p>
   </form>
 {% endblock %}
