@@ -1,0 +1,28 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>User List</h1>
+    <hr>
+    {% for user in users %}
+        <p>
+            Username: {{ user.user_name }}
+        </p>
+        <p>
+            Password: {{ user.password }}
+        </p>
+        <p>
+            Class: {{ user.user_class }}
+        </p>
+        <p>
+            Date Registered: {{ user.date_registered }}
+        </p>
+        <p>
+            Person ID: {{ user.person_id }}
+        </p>
+        <p>
+            <a href="{{ url_for('edit_user', userName=user.user_name) }}">edit</a>
+        </p>
+        <hr>
+    {% endfor %}
+{% endblock %}
