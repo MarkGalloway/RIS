@@ -84,7 +84,10 @@ def edit_person(personId):
 @app.route('/person/<personId>/detail')
 def person_detail(personId):
     person = models.Person.query.get_or_404(personId)
-    return render_template('person_detail.html', person=person)
+    return render_template('person_detail.html',
+                           person=person,
+                           doctorList=", ".join([str(d.person_id) for d in person.doctors]),
+                           patientList=", ".join([str(p.person_id) for p in person.patients]))
 
 
 @app.route('/delete_user/<userName>', methods=['GET', 'POST'])

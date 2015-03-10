@@ -1,28 +1,13 @@
 <!-- extend from base layout -->
 {% extends "base.html" %}
 
+{% from 'macros.html' import listPersonFields %}
+
 {% block content %}
   <h1>Person Details</h1><br>
     <hr>
-        <p>
-            Person ID: {{ person.person_id }}
-        </p>
-        <p>
-            First Name: {{ person.first_name }}
-        </p>
-        <p>
-            Last Name: {{ person.last_name }}
-        </p>
-        <p>
-            Address: {{ person.address }}
-        </p>
-        <p>
-            Email: {{ person.email }}
-        </p>
-        <p>
-            Phone: {{ person.phone }}
-        </p>
-            <a href="{{ url_for('edit_person', personId=person.person_id) }}">Edit</a>
+        {{ listPersonFields(person) }}
+        <hr>
         <p>
             Users:
             {% for user in person.users %}
@@ -32,18 +17,13 @@
             | <a href="{{ url_for('add_user', personId=person.person_id) }}">+</a>
         </p>
         <p>
-            Doctors (IDs):
-            {% for doctor in person.doctors %}
-                {{ doctor.person_id }},
-            {% endfor %}<br>
+            Doctors (IDs): {{ doctorList }}
         </p>
         <p>
-            Patients (IDs):
-            {% for patient in person.patients %}
-                {{ patient.person_id }},
-            {% endfor %}<br>
+            Patients (IDs): {{ patientList }}
         </p>
+        <hr>
         <p>
-            <a href="{{ url_for('delete_person', personId=person.person_id) }}">Delete</a>
+            <a href="{{ url_for('delete_person', personId=person.person_id) }}">Delete this Person</a>
         </p>
 {% endblock %}

@@ -7,3 +7,26 @@
           {% endfor %}<br/>
       </p>
 {% endmacro %}
+
+{% macro listPersonFields(person) %}
+    <p>
+        Person ID: {{ person.person_id }}
+    </p>
+    <p>
+        First Name: {{ person.first_name }}
+    </p>
+    <p>
+        Last Name: {{ person.last_name }}
+    </p>
+    <p>
+        Address: {{ person.address }}
+    </p>
+    <p>
+        Email: {{ person.email }}
+    </p>
+    <p>
+        Phone: {{ person.phone }}
+    </p>
+    <a href="{{ url_for('edit_person', personId=person.person_id) }}">Edit</a>
+
+{% endmacro %}
