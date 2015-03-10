@@ -20,3 +20,8 @@ class PersonForm(Form):
     address = StringField('Address', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired()])
     phone = StringField('Phone', validators=[DataRequired()])
+
+
+class DoctorPatientForm(Form):
+    doctor_id = SelectField('Doctor')
+    patient_id = SelectField('Patient')

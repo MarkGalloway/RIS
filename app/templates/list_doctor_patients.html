@@ -1,0 +1,14 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Doctor Patient Relations</h1><br>
+    <a href="{{ url_for('add_doctor_patient_relation') }}">Add Relation</a>
+    <hr>
+    {% for dprel in docPatRels %}
+        {{ dprel.doctor_id }} {{ dprel.doctor.last_name }},  {{ dprel.doctor.first_name }}
+        has patient
+        {{ dprel.patient_id }} {{ dprel.patient.last_name }}, {{ dprel.patient.first_name }}
+        <br>
+    {% endfor %}
+{% endblock %}

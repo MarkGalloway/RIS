@@ -1,7 +1,7 @@
 from datetime import date
 from flask import render_template, flash, redirect, url_for
 from app import app, db, models
-from app.forms.user_management import UserForm, PersonForm
+from app.forms.user_management import UserForm, PersonForm, DoctorPatientForm
 
 
 @app.route('/user_management')
@@ -109,3 +109,27 @@ def delete_person(personId):
                            form=form,
                            objType="Person",
                            objId=personId)
+
+
+@app.route('/list_doctor_patients')
+def list_doctor_patients():
+    docPatRels = models.Doctor.query.all()
+    return render_template('list_doctor_patients.html', docPatRels=docPatRels)
+
+
+@app.route('/add_doctor_patient_relation', methods=['GET', 'POST'])
+def add_doctor_patient_relation():
+    persons = models.Person.query.all()
+    choices = []
+    for person in persons:
+        choices.append((person.person_id, ", ".join([person.last_name, person.first_name])))
+    form = DoctorPatientForm()
+    form.doctor_id.choices = choices
+    form.patient_id.choices = choices
+    if form.is_submitted():
+        docPatRel = models.Doctor()
+        form.populate_obj(docPatRel)
+        db.session.add(docPatRel)
+        db.session.commit()
+        return redirect(url_for('list_doctor_patients'))
+    return render_template('add_doctor_patient.html', form=form)
