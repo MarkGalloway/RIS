@@ -81,6 +81,12 @@ def edit_person(personId):
     return render_template('edit_person.html', form=form, actionName="Edit")
 
 
+@app.route('/person/<personId>/detail')
+def person_detail(personId):
+    person = models.Person.query.get_or_404(personId)
+    return render_template('person_detail.html', person=person)
+
+
 @app.route('/delete_user/<userName>', methods=['GET', 'POST'])
 def delete_user(userName):
     user = models.User.query.get_or_404(userName)
@@ -118,18 +124,44 @@ def list_doctor_patients():
 
 
 @app.route('/add_doctor_patient_relation', methods=['GET', 'POST'])
-def add_doctor_patient_relation():
+@app.route('/edit/doctor/<doctorId>/patient/<patientId>', methods=['GET', 'POST'])
+def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
+    editing = True if doctorId and patientId else False
     persons = models.Person.query.all()
     choices = []
     for person in persons:
         choices.append((person.person_id, ", ".join([person.last_name, person.first_name])))
-    form = DoctorPatientForm()
+
+    if editing:
+        docPatRel = models.Doctor.query.get((doctorId, patientId))
+        form = DoctorPatientForm(obj=docPatRel)
+        actionName = "Edit"
+    else:
+        docPatRel = models.Doctor()
+        form = DoctorPatientForm()
+        actionName = "Add"
+
     form.doctor_id.choices = choices
     form.patient_id.choices = choices
     if form.is_submitted():
-        docPatRel = models.Doctor()
         form.populate_obj(docPatRel)
-        db.session.add(docPatRel)
+        if not editing:
+            db.session.add(docPatRel)
         db.session.commit()
         return redirect(url_for('list_doctor_patients'))
-    return render_template('add_doctor_patient.html', form=form)
+    return render_template('edit_doctor_patient.html', form=form, actionName=actionName)
+
+
+@app.route('/delete/doctor/<doctorId>/patient/<patientId>', methods=['GET', 'POST'])
+def delete_doctor_patient_relation(doctorId, patientId):
+    docPatRel = models.Doctor.query.get_or_404((doctorId, patientId))
+    form = DoctorPatientForm(obj=docPatRel)
+    if form.is_submitted():
+        db.session.delete(docPatRel)
+        db.session.commit()
+        flash(u'Doctor {} Patient {} relation has been deleted'.format(doctorId, patientId))
+        return redirect(url_for('list_doctor_patients'))
+    return render_template('delete_warning.html',
+                           form=form,
+                           objType="Doctor Patient Relation",
+                           objId="{} <-> {}".format(doctorId, patientId))

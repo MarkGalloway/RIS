@@ -25,21 +25,11 @@
         <p>
             Phone: {{ person.phone }}
         </p>
-            <a href="{{ url_for('edit_person', personId=person.person_id) }}">Edit</a>
         <p>
-            Users:
-            {% for user in person.users %}
-                <a href="{{ url_for('edit_user', userName=user.user_name) }}">
-                    {{ user.user_name }}</a>
-            {% endfor %}
-            | <a href="{{ url_for('add_user', personId=person.person_id) }}">+</a>
+            <a href="{{ url_for('person_detail', personId=person.person_id) }}">Details</a>
         </p>
         <p>
-            Doctors (IDs):
-            {% for doctor in person.doctor_doctors %}
-                {{ doctor.doctor_id }},
-            {% endfor %}<br>
-            | <a href="{{ url_for('list_doctor_patients') }}">Edit</a>
+            <a href="{{ url_for('edit_person', personId=person.person_id) }}">Edit</a>
         </p>
         <p>
             <a href="{{ url_for('delete_person', personId=person.person_id) }}">Delete</a>

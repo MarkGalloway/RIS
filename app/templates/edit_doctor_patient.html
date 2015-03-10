@@ -2,8 +2,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Add Doctor Patient Relation</h1>
-    <form action="" method="post" name="add_doctor_patient_relation">
+    <h1>{{ actionName }} Doctor Patient Relation:</h1>
+    <form action="" method="post" name="add_edit_doctor_patient_relation">
         {{ form.hidden_tag() }}
         {{ form.doctor_id.label }} {{ form.doctor_id }}
         {{ form.patient_id.label }} {{ form.patient_id }}
