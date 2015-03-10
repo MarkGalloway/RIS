@@ -1,0 +1,9 @@
+{% macro formLabelFieldErrors(formField, fieldSize=24) %}
+      <p>
+          {{ formField.label }}:<br/>
+          {{ formField(size=fieldSize) }}
+          {% for error in formField.errors %}
+            <span style="color: red;">* {{ error }}</span>
+          {% endfor %}<br/>
+      </p>
+{% endmacro %}

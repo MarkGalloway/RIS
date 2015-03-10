@@ -1,0 +1,41 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Person List</h1><br>
+    <a href="{{ url_for('add_person') }}">Add Person</a>
+    <hr>
+    {% for person in persons %}
+        <p>
+            Person ID: {{ person.person_id }}
+        </p>
+        <p>
+            First Name: {{ person.first_name }}
+        </p>
+        <p>
+            Last Name: {{ person.last_name }}
+        </p>
+        <p>
+            Address: {{ person.address }}
+        </p>
+        <p>
+            Email: {{ person.email }}
+        </p>
+        <p>
+            Phone: {{ person.phone }}
+        </p>
+        <p>
+            Users:
+            {% for user in person.users %}
+                <a href="{{ url_for('edit_user', userName=user.user_name) }}">
+                    {{ user.user_name }}</a>
+            {% endfor %}
+            | <a href="{{ url_for('add_user', personId=person.person_id) }}">+</a>
+        </p>
+        <p>
+            <a href="{{ url_for('edit_person', personId=person.person_id) }}">Edit</a>
+            | <a href="{{ url_for('delete_person', personId=person.person_id) }}">Delete</a>
+        </p>
+        <hr>
+    {% endfor %}
+{% endblock %}

@@ -12,3 +12,11 @@ class UserForm(Form):
                                       ('p', 'Patient'),
                                       ('d', 'Doctor'),
                                       ('r', 'Radiologist')])
+
+
+class PersonForm(Form):
+    first_name = StringField('First Name', validators=[DataRequired()])
+    last_name = StringField('Last Name', validators=[DataRequired()])
+    address = StringField('Address', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    phone = StringField('Phone', validators=[DataRequired()])
