@@ -1,6 +1,24 @@
 from app import db
 
 
+class Doctor(db.Model):
+    """To indicate who is whose family doctor"""
+    __tablename__ = 'family_doctor'
+
+    # Fields
+    doctor_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'), primary_key=True)
+    patient_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'), primary_key=True)
+
+    # Relationships
+    doctor = db.relationship("Person",
+                             foreign_keys=[doctor_id],
+                             backref=db.backref("doctor_doctors", lazy='dynamic'))
+    patient = db.relationship("Person", foreign_keys=[patient_id], backref="doctor_patients")
+
+    def __repr__(self):
+        return '<FamilyDoctor %r %r>' % (self.doctor_id, self.patient_id)
+
+
 class Person(db.Model):
     """To Store Personal Information"""
     __tablename__ = 'persons'
@@ -15,6 +33,10 @@ class Person(db.Model):
 
     # Relationships
     users = db.relationship('User', backref='person')
+    doctors = db.relationship('Person', secondary='family_doctor',
+                              primaryjoin=person_id==Doctor.patient_id,
+                              secondaryjoin=person_id==Doctor.doctor_id,
+                              backref=db.backref('patients', lazy='dynamic'))
 
     def __repr__(self):
         return '<Person %r>' % (self.person_id)
@@ -35,24 +57,6 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.user_name)
-
-
-class Doctor(db.Model):
-    """To indicate who is whose family doctor"""
-    __tablename__ = 'family_doctor'
-
-    # Fields
-    doctor_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'), primary_key=True)
-    patient_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'), primary_key=True)
-
-    # Relationships
-    doctor = db.relationship("Person",
-                             foreign_keys=[doctor_id],
-                             backref=db.backref("doctor_doctors", lazy='dynamic'))
-    patient = db.relationship("Person", foreign_keys=[patient_id], backref="doctor_patients")
-
-    def __repr__(self):
-        return '<FamilyDoctor %r %r>' % (self.doctor_id, self.patient_id)
 
 
 class Record(db.Model):

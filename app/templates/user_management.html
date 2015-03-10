@@ -1,0 +1,9 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>User Management</h1><br>
+    <a href="{{ url_for('list_persons') }}">Manage Persons</a><br>
+    <a href="{{ url_for('list_users') }}">Manage Users</a><br>
+    <a href="{{ url_for('list_doctor_patients') }}">Manage Doctors</a><br>
+{% endblock %}

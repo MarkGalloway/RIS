@@ -1,0 +1,29 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{% from 'macros.html' import listPersonFields %}
+
+{% block content %}
+  <h1>Person Details</h1><br>
+    <hr>
+        {{ listPersonFields(person) }}
+        <hr>
+        <p>
+            Users:
+            {% for user in person.users %}
+                <a href="{{ url_for('edit_user', userName=user.user_name) }}">
+                    {{ user.user_name }}</a>
+            {% endfor %}
+            | <a href="{{ url_for('add_user', personId=person.person_id) }}">+</a>
+        </p>
+        <p>
+            Doctors (IDs): {{ doctorList }}
+        </p>
+        <p>
+            Patients (IDs): {{ patientList }}
+        </p>
+        <hr>
+        <p>
+            <a href="{{ url_for('delete_person', personId=person.person_id) }}">Delete this Person</a>
+        </p>
+{% endblock %}

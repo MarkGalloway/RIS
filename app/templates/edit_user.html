@@ -1,6 +1,8 @@
 <!-- extend from base layout -->
 {% extends "base.html" %}
 
+{% from 'macros.html' import formLabelFieldErrors %}
+
 {% block content %}
   <h1>{{ actionName }} User:
       {% if form.user_name.data %}
@@ -8,27 +10,9 @@
       {% endif %} </h1>
   <form action="" method="post" name="edit_user">
       {{ form.hidden_tag() }}
-      <p>
-          {{ form.user_name.label }}:<br/>
-          {{ form.user_name(size=24) }}
-          {% for error in form.user_name.errors %}
-            <span style="color: red;">* {{ error }}</span>
-          {% endfor %}<br/>
-      </p>
-      <p>
-          {{ form.password.label }}:<br>
-          {{ form.password(size=24) }}
-          {% for error in form.password.errors %}
-            <span style="color: red;">* {{ error }}</span>
-          {% endfor %}<br/>
-      </p>
-      <p>
-          {{ form.person_id.label }}:<br>
-          {{ form.person_id(size=24) }}
-          {% for error in form.person_id.errors %}
-              <span style="color: red;">* {{ error }}</span>
-          {% endfor %}<br/>
-      </p>
+      {{ formLabelFieldErrors(form.user_name) }}
+      {{ formLabelFieldErrors(form.password) }}
+      {{ formLabelFieldErrors(form.person_id) }}
       <p>
           {{ form.user_class.label }}:
           {{ form.user_class }}
