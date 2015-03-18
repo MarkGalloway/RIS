@@ -1,21 +1,29 @@
 from datetime import date
 from flask import render_template, flash, redirect, url_for
+from flask.ext.login import login_required
 from app import app, db, models
 from app.forms.user_management import UserForm, PersonForm, DoctorPatientForm
+from app.views.util.login import requires_roles
 
 
 @app.route('/user_management')
+@login_required
+@requires_roles('a')
 def user_management():
     return render_template('user_management.html')
 
 
 @app.route('/list_users')
+@login_required
+@requires_roles('a')
 def list_users():
     users = models.User.query.all()
     return render_template('list_users.html', users=users)
 
 
 @app.route('/list_persons')
+@login_required
+@requires_roles('a')
 def list_persons():
     persons = models.Person.query.all()
     return render_template('list_persons.html', persons=persons)
@@ -23,6 +31,8 @@ def list_persons():
 
 @app.route('/add_user', methods=['GET', 'POST'])
 @app.route('/add_user/<personId>', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def add_user(personId=None):
     form = UserForm(person_id=personId)
     if form.validate_on_submit():
@@ -37,6 +47,8 @@ def add_user(personId=None):
 
 
 @app.route('/add_person', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def add_person():
     form = PersonForm()
     if form.validate_on_submit():
@@ -51,6 +63,8 @@ def add_person():
 
 
 @app.route('/edit_user/<userName>', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def edit_user(userName):
     user = models.User.query.get_or_404(userName)
     form = UserForm(obj=user)
@@ -69,6 +83,8 @@ def edit_user(userName):
 
 
 @app.route('/edit_person/<personId>', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def edit_person(personId):
     person = models.Person.query.get_or_404(personId)
     form = PersonForm(obj=person)
@@ -82,6 +98,8 @@ def edit_person(personId):
 
 
 @app.route('/person/<personId>/detail')
+@login_required
+@requires_roles('a')
 def person_detail(personId):
     person = models.Person.query.get_or_404(personId)
     return render_template('person_detail.html',
@@ -91,6 +109,8 @@ def person_detail(personId):
 
 
 @app.route('/delete_user/<userName>', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def delete_user(userName):
     user = models.User.query.get_or_404(userName)
     form = UserForm(obj=user)
@@ -106,6 +126,8 @@ def delete_user(userName):
 
 
 @app.route('/delete_person/<personId>', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def delete_person(personId):
     person = models.Person.query.get_or_404(personId)
     form = PersonForm(obj=person)
@@ -121,6 +143,8 @@ def delete_person(personId):
 
 
 @app.route('/list_doctor_patients')
+@login_required
+@requires_roles('a')
 def list_doctor_patients():
     docPatRels = models.Doctor.query.all()
     return render_template('list_doctor_patients.html', docPatRels=docPatRels)
@@ -128,6 +152,8 @@ def list_doctor_patients():
 
 @app.route('/add_doctor_patient_relation', methods=['GET', 'POST'])
 @app.route('/edit/doctor/<doctorId>/patient/<patientId>', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
     editing = True if doctorId and patientId else False
     persons = models.Person.query.all()
@@ -156,6 +182,8 @@ def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
 
 
 @app.route('/delete/doctor/<doctorId>/patient/<patientId>', methods=['GET', 'POST'])
+@login_required
+@requires_roles('a')
 def delete_doctor_patient_relation(doctorId, patientId):
     docPatRel = models.Doctor.query.get_or_404((doctorId, patientId))
     form = DoctorPatientForm(obj=docPatRel)

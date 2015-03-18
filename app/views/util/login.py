@@ -8,11 +8,13 @@ def getCurrentUserRole():
 
 
 def requires_roles(*roles):
+    """http://flask.pocoo.org/snippets/98/"""
     def wrapper(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
             if getCurrentUserRole() not in roles:
-                return "The user has insufficient privileges to access this resource."
+                flash("The user has insufficient privileges to access this resource.")
+                return redirect(url_for('index'))
             return f(*args, **kwargs)
         return wrapped
     return wrapper

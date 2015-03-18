@@ -62,6 +62,13 @@ def test_admin():
     return g.user.user_name + " is an admin!"
 
 
+@app.route('/test_doctor')
+@login_required
+@requires_roles('d')
+def test_doctor():
+    return "Good morning Dr. " + g.user.user_name
+
+
 @lm.user_loader
 def load_user(id):
     return User.query.get(id)
