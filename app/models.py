@@ -55,6 +55,22 @@ class User(db.Model):
     date_registered = db.Column(db.Date)
     person_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'))
 
+    def is_authenticated(self):
+        return True
+
+
+    def is_active(self):
+        return True
+
+
+    def is_anonymous(self):
+        return False
+
+
+    def get_id(self):
+        return str(self.user_name)
+
+
     def __repr__(self):
         return '<User %r>' % (self.user_name)
 
