@@ -7,14 +7,42 @@ def getCurrentUserRole():
     return g.user.user_class
 
 
+def privilegeError():
+    flash("The user has insufficient privileges to access this resource.")
+    return redirect(url_for('index'))
+
+
 def requires_roles(*roles):
     """http://flask.pocoo.org/snippets/98/"""
     def wrapper(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
             if getCurrentUserRole() not in roles:
-                flash("The user has insufficient privileges to access this resource.")
-                return redirect(url_for('index'))
+                return privilegeError()
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
+
+
+def match_person(personIdKey):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if g.user.user_class is not 'a':
+                if g.user.person_id is not int(kwargs.get(personIdKey)):
+                    return privilegeError()
+            return f(*args, **kwargs)
+        return wrapped
+    return wrapper
+
+
+def match_user(userNameKey):
+    def wrapper(f):
+        @wraps(f)
+        def wrapped(*args, **kwargs):
+            if g.user.user_class is not 'a':
+                if g.user.user_name != kwargs.get(userNameKey):
+                    return privilegeError()
             return f(*args, **kwargs)
         return wrapped
     return wrapper

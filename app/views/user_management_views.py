@@ -1,9 +1,9 @@
 from datetime import date
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, request, g
 from flask.ext.login import login_required
 from app import app, db, models
 from app.forms.user_management import UserForm, PersonForm, DoctorPatientForm
-from app.views.util.login import requires_roles
+from app.views.util.login import requires_roles, match_person, match_user
 
 
 @app.route('/user_management')
@@ -64,7 +64,7 @@ def add_person():
 
 @app.route('/edit_user/<userName>', methods=['GET', 'POST'])
 @login_required
-@requires_roles('a')
+@match_user('userName')
 def edit_user(userName):
     user = models.User.query.get_or_404(userName)
     form = UserForm(obj=user)
@@ -84,7 +84,7 @@ def edit_user(userName):
 
 @app.route('/edit_person/<personId>', methods=['GET', 'POST'])
 @login_required
-@requires_roles('a')
+@match_person('personId')
 def edit_person(personId):
     person = models.Person.query.get_or_404(personId)
     form = PersonForm(obj=person)
@@ -99,7 +99,7 @@ def edit_person(personId):
 
 @app.route('/person/<personId>/detail')
 @login_required
-@requires_roles('a')
+@match_person('personId')
 def person_detail(personId):
     person = models.Person.query.get_or_404(personId)
     return render_template('person_detail.html',
