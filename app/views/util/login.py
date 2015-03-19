@@ -25,30 +25,6 @@ def requires_roles(*roles):
     return wrapper
 
 
-def match_person(personIdKey):
-    def wrapper(f):
-        @wraps(f)
-        def wrapped(*args, **kwargs):
-            if g.user.user_class is not 'a':
-                if g.user.person_id is not int(kwargs.get(personIdKey)):
-                    return privilegeError()
-            return f(*args, **kwargs)
-        return wrapped
-    return wrapper
-
-
-def match_user(userNameKey):
-    def wrapper(f):
-        @wraps(f)
-        def wrapped(*args, **kwargs):
-            if g.user.user_class is not 'a':
-                if g.user.user_name != kwargs.get(userNameKey):
-                    return privilegeError()
-            return f(*args, **kwargs)
-        return wrapped
-    return wrapper
-
-
 def mustMatchOrPrivilegeError(first, second):
     if g.user.user_class is not 'a' and str(first) != str(second):
         return privilegeError()
