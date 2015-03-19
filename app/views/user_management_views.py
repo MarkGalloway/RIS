@@ -15,7 +15,7 @@ def user_management():
     return render_template('user_management.html')
 
 
-@app.route('/list_users')
+@app.route('/user/list')
 @login_required
 @requires_roles('a')
 def list_users():
@@ -23,7 +23,7 @@ def list_users():
     return render_template('list_users.html', users=users)
 
 
-@app.route('/list_persons')
+@app.route('/person/list')
 @login_required
 @requires_roles('a')
 def list_persons():
@@ -31,12 +31,13 @@ def list_persons():
     return render_template('list_persons.html', persons=persons)
 
 
-@app.route('/add_user', methods=['GET', 'POST'])
-@app.route('/add_user/<personId>', methods=['GET', 'POST'])
+@app.route('/user/add', methods=['GET', 'POST'])
+@app.route('/person/<personId>/add/user', methods=['GET', 'POST'])
 @login_required
 @requires_roles('a')
 def add_user(personId=None):
     form = UserForm(person_id=personId)
+    form.person_id.choices = personChoices()
     if form.validate_on_submit():
         user = models.User()
         form.populate_obj(user)
@@ -48,7 +49,7 @@ def add_user(personId=None):
     return render_template('edit_user.html', form=form, actionName="Add")
 
 
-@app.route('/add_person', methods=['GET', 'POST'])
+@app.route('/person/add', methods=['GET', 'POST'])
 @login_required
 @requires_roles('a')
 def add_person():
@@ -64,7 +65,7 @@ def add_person():
     return render_template('edit_person.html', form=form, actionName="Add")
 
 
-@app.route('/edit_user/<userName>', methods=['GET', 'POST'])
+@app.route('/user/<userName>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_user(userName):
     mustMatchOrPrivilegeError(g.user.user_name, userName)
@@ -80,7 +81,7 @@ def edit_user(userName):
     return render_template('edit_user.html', form=form, actionName="Edit")
 
 
-@app.route('/edit_person/<personId>', methods=['GET', 'POST'])
+@app.route('/person/<personId>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_person(personId):
     mustMatchOrPrivilegeError(g.user.person_id, personId)
@@ -106,7 +107,7 @@ def person_detail(personId):
                            patientList=", ".join([str(p.person_id) for p in person.patients]))
 
 
-@app.route('/delete_user/<userName>', methods=['GET', 'POST'])
+@app.route('/user/<userName>/delete', methods=['GET', 'POST'])
 @login_required
 @requires_roles('a')
 def delete_user(userName):
@@ -123,7 +124,7 @@ def delete_user(userName):
                            objId=userName)
 
 
-@app.route('/delete_person/<personId>', methods=['GET', 'POST'])
+@app.route('/person/<personId>/delete', methods=['GET', 'POST'])
 @login_required
 @requires_roles('a')
 def delete_person(personId):
@@ -140,7 +141,7 @@ def delete_person(personId):
                            objId=personId)
 
 
-@app.route('/list_doctor_patients')
+@app.route('/doctor_patient/list')
 @login_required
 @requires_roles('a')
 def list_doctor_patients():
@@ -148,8 +149,8 @@ def list_doctor_patients():
     return render_template('list_doctor_patients.html', docPatRels=docPatRels)
 
 
-@app.route('/add_doctor_patient_relation', methods=['GET', 'POST'])
-@app.route('/edit/doctor/<doctorId>/patient/<patientId>', methods=['GET', 'POST'])
+@app.route('/doctor_patient/add', methods=['GET', 'POST'])
+@app.route('/doctor/<doctorId>/patient/<patientId>/edit', methods=['GET', 'POST'])
 @login_required
 @requires_roles('a')
 def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
@@ -176,7 +177,7 @@ def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
     return render_template('edit_doctor_patient.html', form=form, actionName=actionName)
 
 
-@app.route('/delete/doctor/<doctorId>/patient/<patientId>', methods=['GET', 'POST'])
+@app.route('/doctor/<doctorId>/patient/<patientId>/delete', methods=['GET', 'POST'])
 @login_required
 @requires_roles('a')
 def delete_doctor_patient_relation(doctorId, patientId):
