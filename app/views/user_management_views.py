@@ -1,9 +1,11 @@
 from datetime import date
-from flask import render_template, flash, redirect, url_for, request, g
+
+from flask import render_template, flash, redirect, url_for, g
 from flask.ext.login import login_required
+
 from app import app, db, models
 from app.forms.user_management import UserForm, PersonForm, DoctorPatientForm
-from app.views.util.login import requires_roles, match_person, match_user
+from app.views.util.login import requires_roles, mustMatchOrPrivilegeError
 
 
 @app.route('/user_management')
@@ -64,28 +66,24 @@ def add_person():
 
 @app.route('/edit_user/<userName>', methods=['GET', 'POST'])
 @login_required
-@match_user('userName')
 def edit_user(userName):
+    mustMatchOrPrivilegeError(g.user.user_name, userName)
     user = models.User.query.get_or_404(userName)
     form = UserForm(obj=user)
+    form.person_id.choices = personChoices()
     if form.validate_on_submit():
         flash(u'Saving data for User {}'.format(form.user_name.data))
         form.populate_obj(user)
         db.session.commit()
         flash(u'Data has been saved for User {}'.format(form.user_name.data))
         return redirect(url_for('user_management'))
-    else:
-        form.user_name.data = user.user_name
-        form.password.data = user.password
-        form.user_class.data = user.user_class
-        form.person_id.data = user.person_id
     return render_template('edit_user.html', form=form, actionName="Edit")
 
 
 @app.route('/edit_person/<personId>', methods=['GET', 'POST'])
 @login_required
-@match_person('personId')
 def edit_person(personId):
+    mustMatchOrPrivilegeError(g.user.person_id, personId)
     person = models.Person.query.get_or_404(personId)
     form = PersonForm(obj=person)
     if form.validate_on_submit():
@@ -99,8 +97,8 @@ def edit_person(personId):
 
 @app.route('/person/<personId>/detail')
 @login_required
-@match_person('personId')
 def person_detail(personId):
+    mustMatchOrPrivilegeError(g.user.person_id, personId)
     person = models.Person.query.get_or_404(personId)
     return render_template('person_detail.html',
                            person=person,
@@ -156,10 +154,7 @@ def list_doctor_patients():
 @requires_roles('a')
 def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
     editing = True if doctorId and patientId else False
-    persons = models.Person.query.all()
-    choices = []
-    for person in persons:
-        choices.append((person.person_id, ", ".join([person.last_name, person.first_name])))
+    choices = personChoices()
 
     if editing:
         docPatRel = models.Doctor.query.get((doctorId, patientId))
@@ -196,3 +191,12 @@ def delete_doctor_patient_relation(doctorId, patientId):
                            form=form,
                            objType="Doctor Patient Relation",
                            objId="{} <-> {}".format(doctorId, patientId))
+
+
+def personChoices():
+    persons = models.Person.query.all()
+    choices = []
+    for person in persons:
+        choices.append((person.person_id,
+                        str(person.person_id) + " - " + ", ".join([person.last_name, person.first_name])))
+    return choices

@@ -1,6 +1,7 @@
 from functools import wraps
 from flask import g, session, flash, redirect, request, url_for
 from flask.ext.login import login_user
+from werkzeug.routing import RequestRedirect
 
 
 def getCurrentUserRole():
@@ -9,7 +10,7 @@ def getCurrentUserRole():
 
 def privilegeError():
     flash("The user has insufficient privileges to access this resource.")
-    return redirect(url_for('index'))
+    raise RequestRedirect(url_for('index'))
 
 
 def requires_roles(*roles):
@@ -46,6 +47,11 @@ def match_user(userNameKey):
             return f(*args, **kwargs)
         return wrapped
     return wrapper
+
+
+def mustMatchOrPrivilegeError(first, second):
+    if g.user.user_class is not 'a' and str(first) != str(second):
+        return privilegeError()
 
 
 def tryLogin(user, password):

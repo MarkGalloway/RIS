@@ -13,7 +13,8 @@
       {{ formLabelFieldErrors(form.user_name) }}
       {{ formLabelFieldErrors(form.password) }}
       {% if g.user.user_class == 'a' %}
-          {{ formLabelFieldErrors(form.person_id) }}
+          {{ form.person_id.label }}:
+          {{ form.person_id }}
           <p>
               {{ form.user_class.label }}:
               {{ form.user_class }}
