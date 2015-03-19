@@ -155,12 +155,8 @@ def list_doctor_patients():
 @requires_roles('a')
 def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
     editing = True if doctorId and patientId else False
-    # models.Person.query.filter(models.Person.user_class in ['d', 'r'])
-    doctors = db.session.query(models.Person).join(models.User).filter((models.User.user_class == 'd')
-                                                                        | (models.User.user_class == 'r')).all()
-    print(doctors)
+    doctors = selectPersonsWhoAreDoctors()
     doctorChoices = personChoices(doctors)
-    print(doctorChoices)
     choices = personChoices()
 
     if editing:
@@ -206,3 +202,10 @@ def personChoices(persons=models.Person.query.all()):
         choices.append((person.person_id,
                         str(person.person_id) + " - " + ", ".join([person.last_name, person.first_name])))
     return choices
+
+
+def selectPersonsWhoAreDoctors():
+    return db.session.query(models.Person).join(models.User).filter((models.User.user_class == 'd')
+                                                                    | (models.User.user_class == 'r')).all()
+
+
