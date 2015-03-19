@@ -12,11 +12,14 @@
       {{ form.hidden_tag() }}
       {{ formLabelFieldErrors(form.user_name) }}
       {{ formLabelFieldErrors(form.password) }}
-      {{ formLabelFieldErrors(form.person_id) }}
-      <p>
-          {{ form.user_class.label }}:
-          {{ form.user_class }}
-      </p>
+      {% if g.user.user_class == 'a' %}
+          {{ form.person_id.label }}:
+          {{ form.person_id }}
+          <p>
+              {{ form.user_class.label }}:
+              {{ form.user_class }}
+          </p>
+      {% endif %}
       <p><input type="submit" value="Save"></p>
   </form>
 {% endblock %}
