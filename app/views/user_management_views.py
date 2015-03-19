@@ -155,6 +155,12 @@ def list_doctor_patients():
 @requires_roles('a')
 def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
     editing = True if doctorId and patientId else False
+    # models.Person.query.filter(models.Person.user_class in ['d', 'r'])
+    doctors = db.session.query(models.Person).join(models.User).filter((models.User.user_class == 'd')
+                                                                        | (models.User.user_class == 'r')).all()
+    print(doctors)
+    doctorChoices = personChoices(doctors)
+    print(doctorChoices)
     choices = personChoices()
 
     if editing:
@@ -166,7 +172,7 @@ def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
         form = DoctorPatientForm()
         actionName = "Add"
 
-    form.doctor_id.choices = choices
+    form.doctor_id.choices = doctorChoices
     form.patient_id.choices = choices
     if form.is_submitted():
         form.populate_obj(docPatRel)
@@ -194,8 +200,7 @@ def delete_doctor_patient_relation(doctorId, patientId):
                            objId="{} <-> {}".format(doctorId, patientId))
 
 
-def personChoices():
-    persons = models.Person.query.all()
+def personChoices(persons=models.Person.query.all()):
     choices = []
     for person in persons:
         choices.append((person.person_id,
