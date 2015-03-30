@@ -1,3 +1,4 @@
+# Automatically import all sub packages in this directory
 import pkgutil
 import sys
 

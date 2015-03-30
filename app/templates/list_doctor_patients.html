@@ -1,6 +1,8 @@
 <!-- extend from base layout -->
 {% extends "base.html" %}
 
+{# List all doctor patient relationships in a table with
+    add, edit, and delete functionality. #}
 {% block content %}
   <h1>Doctor Patient Relations</h1><br>
     <a href="{{ url_for('add_edit_doctor_patient_relation') }}">

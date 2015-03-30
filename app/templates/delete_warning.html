@@ -1,6 +1,9 @@
 <!-- extend from base layout -->
 {% extends "base.html" %}
 
+{# Generic template for a delete warning page.
+    objType: is the model you are deleting (eg. "Person")
+    objId:   is the identifier for the model. #}
 {% block content %}
   <h1>Delete {{ objType }}: {{ objId }} </h1>
     Are you sure?<br>

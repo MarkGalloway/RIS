@@ -3,6 +3,8 @@
 
 {% from 'macros.html' import formLabelFieldErrors %}
 
+{# Add or edit a user.
+    actionName: "Add" or "Edit" depending on what is being done. #}
 {% block content %}
   <h1>{{ actionName }} User:
       {% if form.user_name.data %}
