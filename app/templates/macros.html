@@ -1,3 +1,4 @@
+{# Displays a form field with input box and performs error checking. #}
 {% macro formLabelFieldErrors(formField, fieldSize=24) %}
       <p>
           {{ formField.label }}:<br/>
@@ -8,6 +9,7 @@
       </p>
 {% endmacro %}
 
+{# List all fields in a person. #}
 {% macro listPersonFields(person) %}
     <p>
         Person ID: {{ person.person_id }}

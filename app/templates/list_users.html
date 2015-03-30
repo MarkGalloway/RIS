@@ -1,6 +1,7 @@
 <!-- extend from base layout -->
 {% extends "base.html" %}
 
+{# List all users with add, edit, and delete functionality. #}
 {% block content %}
   <h1>User List</h1><br>
     <a href="{{ url_for('add_user') }}">Add User</a>

@@ -11,7 +11,11 @@ from app.views.util.login import tryLogin, requires_roles
 @app.route('/index')
 @login_required
 def index():
-    user = g.user
+    """
+    Display the home page.
+    :return: Index template.
+    """
+    user = g.user  # get the currently logged in user
     return render_template("index.html",
                            title='Home',
                            user=user)
@@ -19,6 +23,10 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Login page.
+    :return: Login template.
+    """
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('index'))
 
@@ -37,6 +45,10 @@ def login():
 
 @app.route('/logout')
 def logout():
+    """
+    Log the user out.
+    :return: Redirect to index.
+    """
     logout_user()
     return redirect(url_for('index'))
 
@@ -71,10 +83,20 @@ def test_doctor():
 
 @lm.user_loader
 def load_user(id):
+    """
+    Used by Flask-Login to get a user by id.
+    :param id: user id.
+    :return: User.
+    """
     return User.query.get(id)
 
 @app.before_request
 def before_request():
+    """
+    Anything we want to happen before every request goes here.
+    """
+    # Set the global user to the current user as given by Flask-Login
+    # This allows us to access the current user from forms and templates
     g.user = current_user
 
 

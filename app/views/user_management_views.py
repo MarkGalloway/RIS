@@ -12,6 +12,7 @@ from app.views.util.login import requires_roles, mustMatchOrPrivilegeError
 @login_required
 @requires_roles('a')
 def user_management():
+    """Render user management main page."""
     return render_template('user_management.html')
 
 
@@ -19,6 +20,7 @@ def user_management():
 @login_required
 @requires_roles('a')
 def list_users():
+    """List all users."""
     users = models.User.query.all()
     return render_template('list_users.html', users=users)
 
@@ -27,6 +29,7 @@ def list_users():
 @login_required
 @requires_roles('a')
 def list_persons():
+    """List all persons."""
     persons = models.Person.query.all()
     return render_template('list_persons.html', persons=persons)
 
@@ -36,8 +39,13 @@ def list_persons():
 @login_required
 @requires_roles('a')
 def add_user(personId=None):
+    """
+    Add a user.
+    :param personId: If this is supplied, autofills in the personID in the form.
+    :return: Edit user template with "Add" action.
+    """
     form = UserForm(person_id=personId)
-    form.person_id.choices = personChoices()
+    form.person_id.choices = personChoicesForSelectField()
     if form.validate_on_submit():
         user = models.User()
         form.populate_obj(user)
@@ -53,6 +61,11 @@ def add_user(personId=None):
 @login_required
 @requires_roles('a')
 def add_person():
+    """
+    Add a person.
+    Requires admin privileges.
+    :return: Edit person template with "Add" action.
+    """
     form = PersonForm()
     if form.validate_on_submit():
         person = models.Person()
@@ -68,10 +81,17 @@ def add_person():
 @app.route('/user/<userName>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_user(userName):
+    """
+    Edit a user.
+    :param userName: user name of person to edit.
+    :return: Edit user template with "Edit" action.
+    """
+    # Users should only be able to edit themselves unless admin
     mustMatchOrPrivilegeError(g.user.user_name, userName)
+
     user = models.User.query.get_or_404(userName)
     form = UserForm(obj=user)
-    form.person_id.choices = personChoices()
+    form.person_id.choices = personChoicesForSelectField()
     if form.validate_on_submit():
         flash(u'Saving data for User {}'.format(form.user_name.data))
         form.populate_obj(user)
@@ -84,6 +104,11 @@ def edit_user(userName):
 @app.route('/person/<personId>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_person(personId):
+    """
+    Edit a person.
+    :param personId: id of person to edit.
+    :return: Edit person template with "Edit" action.
+    """
     mustMatchOrPrivilegeError(g.user.person_id, personId)
     person = models.Person.query.get_or_404(personId)
     form = PersonForm(obj=person)
@@ -99,6 +124,11 @@ def edit_person(personId):
 @app.route('/person/<personId>/detail')
 @login_required
 def person_detail(personId):
+    """
+    View details of a person.
+    :param personId: id of person details to view.
+    :return: Person detail template with list of doctors and patients.
+    """
     mustMatchOrPrivilegeError(g.user.person_id, personId)
     person = models.Person.query.get_or_404(personId)
     return render_template('person_detail.html',
@@ -111,6 +141,11 @@ def person_detail(personId):
 @login_required
 @requires_roles('a')
 def delete_user(userName):
+    """
+    Delete a user.
+    :param userName: user name of user to delete.
+    :return: Delete warning dialogue page.
+    """
     user = models.User.query.get_or_404(userName)
     form = UserForm(obj=user)
     if form.is_submitted():
@@ -128,6 +163,11 @@ def delete_user(userName):
 @login_required
 @requires_roles('a')
 def delete_person(personId):
+    """
+    Delete a person.
+    :param personId: id of person to delete.
+    :return: Delete warning dialogue page.
+    """
     person = models.Person.query.get_or_404(personId)
     form = PersonForm(obj=person)
     if form.is_submitted():
@@ -145,6 +185,10 @@ def delete_person(personId):
 @login_required
 @requires_roles('a')
 def list_doctor_patients():
+    """
+    List doctor patient relationships.
+    :return: List doctor patient relationship template.
+    """
     docPatRels = models.Doctor.query.all()
     return render_template('list_doctor_patients.html', docPatRels=docPatRels)
 
@@ -154,16 +198,30 @@ def list_doctor_patients():
 @login_required
 @requires_roles('a')
 def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
+    """
+    Add or edit a doctor patient relationship.
+    :param doctorId: id of doctor in relationship.
+    :param patientId: id of patient in relationship.
+    :return: If doctorId and patientId are given, return the template with
+        these fields prepopulated. Else return a template for adding a
+        relationship.
+    """
+    # Are we editing or adding?
     editing = True if doctorId and patientId else False
+
+    # Want just doctors selectable on the left select field
     doctors = selectPersonsWhoAreDoctors()
-    doctorChoices = personChoices(doctors)
-    choices = personChoices()
+    doctorChoices = personChoicesForSelectField(doctors)
+
+    choices = personChoicesForSelectField()
 
     if editing:
+        # setup the template for editing
         docPatRel = models.Doctor.query.get((doctorId, patientId))
         form = DoctorPatientForm(obj=docPatRel)
         actionName = "Edit"
     else:
+        # setup the template for adding
         docPatRel = models.Doctor()
         form = DoctorPatientForm()
         actionName = "Add"
@@ -183,6 +241,12 @@ def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
 @login_required
 @requires_roles('a')
 def delete_doctor_patient_relation(doctorId, patientId):
+    """
+    Delete a doctor patient relationship.
+    :param doctorId: id of doctor in relationship.
+    :param patientId: id of patient in relationship.
+    :return: Delete warning dialogue.
+    """
     docPatRel = models.Doctor.query.get_or_404((doctorId, patientId))
     form = DoctorPatientForm(obj=docPatRel)
     if form.is_submitted():
@@ -196,7 +260,14 @@ def delete_doctor_patient_relation(doctorId, patientId):
                            objId="{} <-> {}".format(doctorId, patientId))
 
 
-def personChoices(persons=models.Person.query.all()):
+def personChoicesForSelectField(persons=models.Person.query.all()):
+    """
+    Creates select field data for a list of persons.
+    Formats the field as "ID - Last, First" to give a unique, readable entry.
+    :param persons: List of persons to generate the data from.
+        If not supplied, just queries the db for all persons.
+    :return: Formatted list of choice tuples.
+    """
     choices = []
     for person in persons:
         choices.append((person.person_id,
@@ -205,6 +276,10 @@ def personChoices(persons=models.Person.query.all()):
 
 
 def selectPersonsWhoAreDoctors():
+    """
+    Helper method to select all persons who are doctors.
+    :return: A list of persons who are doctors.
+    """
     return db.session.query(models.Person).join(models.User).filter((models.User.user_class == 'd')
                                                                     | (models.User.user_class == 'r')).all()
 
