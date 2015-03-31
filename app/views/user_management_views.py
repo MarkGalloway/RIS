@@ -6,6 +6,7 @@ from flask.ext.login import login_required
 from app import app, db, models
 from app.forms.user_management import UserForm, PersonForm, DoctorPatientForm
 from app.views.util.login import requires_roles, mustMatchOrPrivilegeError
+from app.views.util.selectors import personChoicesForSelectField, selectPersonsWhoAreDoctors
 
 
 @app.route('/user_management')
@@ -258,29 +259,3 @@ def delete_doctor_patient_relation(doctorId, patientId):
                            form=form,
                            objType="Doctor Patient Relation",
                            objId="{} <-> {}".format(doctorId, patientId))
-
-
-def personChoicesForSelectField(persons=models.Person.query.all()):
-    """
-    Creates select field data for a list of persons.
-    Formats the field as "ID - Last, First" to give a unique, readable entry.
-    :param persons: List of persons to generate the data from.
-        If not supplied, just queries the db for all persons.
-    :return: Formatted list of choice tuples.
-    """
-    choices = []
-    for person in persons:
-        choices.append((person.person_id,
-                        str(person.person_id) + " - " + ", ".join([person.last_name, person.first_name])))
-    return choices
-
-
-def selectPersonsWhoAreDoctors():
-    """
-    Helper method to select all persons who are doctors.
-    :return: A list of persons who are doctors.
-    """
-    return db.session.query(models.Person).join(models.User).filter((models.User.user_class == 'd')
-                                                                    | (models.User.user_class == 'r')).all()
-
-
