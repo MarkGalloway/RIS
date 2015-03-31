@@ -1,4 +1,4 @@
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import StringField, IntegerField, SelectField, TextAreaField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length
@@ -13,6 +13,9 @@ class RecordForm(Form):
     test_date = DateField('Test Date', validators=[DataRequired()])
     diagnosis = StringField('Diagnosis', validators=[DataRequired(), Length(max=128)])
     description = TextAreaField('Description', validators=[DataRequired(), Length(max=1024)])
+
+    def validate(self):
+        return True
 
 
 # class UploadForm(Form):
