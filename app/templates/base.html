@@ -11,6 +11,7 @@
     <div>Radiology Info System:
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('user_management') }}">Users</a>
+        <a href="{{ url_for('upload') }}">Upload</a>
         |
         {% if g.user.is_authenticated() %}
             Logged in as '{{ g.user.user_name }}'
