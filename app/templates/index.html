@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>Hi, {{ user.user_name }}!</h1>
-    <a href="{{ url_for('edit_user', userName=g.user.user_name) }}">Edit Username/Password</a>
-    <br>
-    <a href="{{ url_for('person_detail', personId=g.user.person_id) }}">View Profile</a>
+    <div class="nav-links">
+        <a href="{{ url_for('edit_user', userName=g.user.user_name) }}">Edit Username/Password</a>
+    </div>
+    <div class="nav-links">
+        <a href="{{ url_for('person_detail', personId=g.user.person_id) }}">View Profile</a>
+    </div>
 {% endblock %}

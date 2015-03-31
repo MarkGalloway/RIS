@@ -4,8 +4,11 @@
 {# List all records with delete functionality #}
 {% block content %}
   <h1>Record List</h1>
+  <div class="nav-links">
     <a href="{{ url_for('upload_record') }}">Upload a new record</a>
+  </div>
     <hr>
+    <div class="section">
     {% for record in records %}
         <p>
             Patient: #{{ record.patient.person_id }} {{ record.patient.first_name }} {{ record.patient.last_name }}
@@ -36,4 +39,5 @@
         </p>
         <hr>
     {% endfor %}
+    </div>
 {% endblock %}

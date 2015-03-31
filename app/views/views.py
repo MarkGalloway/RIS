@@ -7,7 +7,6 @@ from app.models import User
 from app.views.util.login import tryLogin, requires_roles
 
 
-@app.route('/')
 @app.route('/index')
 @login_required
 def index():
@@ -21,6 +20,7 @@ def index():
                            user=user)
 
 
+@app.route('/')
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """
