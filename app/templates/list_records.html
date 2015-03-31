@@ -1,0 +1,39 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{# List all records with delete functionality #}
+{% block content %}
+  <h1>Record List</h1>
+    <a href="{{ url_for('upload_record') }}">Upload a new record</a>
+    <hr>
+    {% for record in records %}
+        <p>
+            Patient: #{{ record.patient.person_id }} {{ record.patient.first_name }} {{ record.patient.last_name }}
+        </p>
+        <p>
+            Doctor: #{{ record.doctor.person_id }} {{ record.doctor.first_name }} {{ record.doctor.last_name }}
+        </p>
+        <p>
+            Radiologist: #{{ record.radiologist.person_id }} {{ record.radiologist.first_name }} {{ record.radiologist.last_name }}
+        </p>
+        <p>
+            Test Type: {{ record.test_type }}
+        </p>
+        <p>
+            Prescribing Date: {{ record.prescribing_date }}
+        </p>
+        <p>
+            Test Date: {{ record.test_date }}
+        </p>
+        <p>
+            Diagnosis: {{ record.diagnosis }}
+        </p>
+        <p>
+            Description: {{ record.description }}
+        </p>
+        <p>
+            <a href="{{ url_for('delete_record', id=record.record_id) }}">Delete</a>
+        </p>
+        <hr>
+    {% endfor %}
+{% endblock %}

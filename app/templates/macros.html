@@ -9,6 +9,18 @@
       </p>
 {% endmacro %}
 
+{# Displays a form field with input box and performs error checking. #}
+{% macro formTextAreaLabelFieldErrors(formField, rows="10", cols="50") %}
+      <p>
+          {{ formField.label }}:<br/>
+          {{ formField(rows=rows, cols=cols) }}
+          {% for error in formField.errors %}
+            <span style="color: red;">* {{ error }}</span>
+          {% endfor %}<br/>
+      </p>
+{% endmacro %}
+
+
 {# List all fields in a person. #}
 {% macro listPersonFields(person) %}
     <p>
