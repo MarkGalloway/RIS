@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
   </head>
   <body>
+  <div class="page">
     <div>Radiology Info System:
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('user_management') }}">Users</a>
@@ -22,15 +23,10 @@
         {% endif %}
     </div>
     <hr>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul>
-        {% for message in messages %}
-            <li>{{ message }} </li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
+    {% for message in get_flashed_messages() %}
+        <div class=flash>{{ message }}</div>
+    {% endfor %}
     {% block content %}{% endblock %}
+    </div>
   </body>
 </html>

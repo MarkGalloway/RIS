@@ -5,9 +5,12 @@
 
 {# List persons with details. Add, edit, and delete functionality. #}
 {% block content %}
-  <h1>Person List</h1><br>
-    <a href="{{ url_for('add_person') }}">Add Person</a>
+  <h1>Person List</h1>
+    <div class="nav-links">
+        <a href="{{ url_for('add_person') }}">Add Person</a>
+    </div>
         <hr>
+    <div class="section">
     {% for person in persons %}
         <p>
             <b>Info</b>
@@ -21,4 +24,5 @@
         </p>
         <hr>
     {% endfor %}
+    </div>
 {% endblock %}
