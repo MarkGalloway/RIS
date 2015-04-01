@@ -7,7 +7,7 @@
 {# Upload a Record #}
 {% block content %}
   <h1>Upload Record</h1>
-  <form action="" method="post" name="upload_record">
+  <form action="" method="post" enctype="multipart/form-data" name="upload_record">
       {{ form.hidden_tag() }}
 
       {# Selector fields #}
@@ -29,6 +29,12 @@
       {{ formLabelFieldErrors(form.test_date) }}
       {{ formLabelFieldErrors(form.diagnosis) }}
       {{ formTextAreaLabelFieldErrors(form.description) }}
+
+      {# File Upload field #}
+      <p>
+      {{ form.images.label }}:
+      {{ form.images(multiple="") }}
+      </p>
 
       <p><input type="submit" value="Upload"></p>
   </form>

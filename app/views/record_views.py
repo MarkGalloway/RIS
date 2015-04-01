@@ -41,16 +41,15 @@ def upload_record():
     form.doctor_id.choices = doctorChoices
     form.radiologist_id.choices = radiologistChoices
 
-    print(form.errors)
-
-    print(form.validate_on_submit())
-
     # Create the Record
     if form.validate_on_submit():
         print("hello")
         record = models.Record()
         form.populate_obj(record)
         db.session.add(record)
+
+        # TODO:  Get image from request, create Image object, attach record
+
         db.session.commit()
         flash(u'Record {} has been saved'.format(record.record_id))
         return redirect(url_for('list_records'))
@@ -71,6 +70,9 @@ def delete_record(id):
     form = RecordForm(obj=record)
     if form.is_submitted():
         db.session.delete(record)
+
+        # TODO:  Add delete image
+
         db.session.commit()
         flash(u'{} has been deleted'.format(id))
         return redirect(url_for('list_records'))
