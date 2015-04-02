@@ -17,7 +17,7 @@ def getData(form=None):
     :return: List of rows returned by the query.
     """
     selectFields = []
-    groupByClause = []
+    tableHeaders = []
 
     # SQL to create year, month, day fields
     year = "year(test_date) as year"
@@ -30,27 +30,30 @@ def getData(form=None):
     if form.test_type.data:
         selectFields.append("test_type")
     if form.test_date.data:
-        groupByClause = copy(selectFields)
+        tableHeaders = copy(selectFields)
         if form.test_date.data == "year":
             selectFields.append(year)
-            groupByClause.append("year")
+            tableHeaders.append("year")
         if form.test_date.data == "month":
             selectFields.append(year)
             selectFields.append(month)
-            groupByClause.append("year")
-            groupByClause.append("month")
+            tableHeaders.append("year")
+            tableHeaders.append("month")
         if form.test_date.data == "day":
             selectFields.append(year)
             selectFields.append(month)
             selectFields.append(day)
-            groupByClause.append("year")
-            groupByClause.append("month")
-            groupByClause.append("day")
+            tableHeaders.append("year")
+            tableHeaders.append("month")
+            tableHeaders.append("day")
 
     # Format the results for the SQL query
     if selectFields:
         selectFields = ",".join(selectFields) + ","
-        groupByClause = "group by " + ",".join(groupByClause)
+        groupByClause = "group by " + ",".join(tableHeaders)
+    else:
+        selectFields = ""
+        groupByClause = ""
 
     # Plug in the selectFields and groupByClause to the query
     query = """
@@ -58,7 +61,7 @@ def getData(form=None):
         from radiology_record r join pacs_images p on r.record_id = p.record_id
         {groupByClause};
         """.format(selectFields=selectFields, groupByClause=groupByClause)
-    
+
     # debug
     print(text(query))
 
@@ -66,9 +69,11 @@ def getData(form=None):
     results = db.engine.execute(text(query))
 
     # need to reformat as list
-    results = list(results)
+    tableHeaders.append("num_images")
+    resultsList = [tableHeaders]
+    resultsList += list(results)
 
-    return results
+    return resultsList
 
 
 @app.route('/data_analysis', methods=['GET', 'POST'])

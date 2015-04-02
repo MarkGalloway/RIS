@@ -2,37 +2,19 @@
 {% extends "data_analysis_selector.html" %}
 
 {% block data %}
-    {% for row in data %}
-        {{ row }}<br>
-    {% endfor %}
-{#    <table>#}
-{#        <tr>#}
-{#            <th></th>#}
-{#            <th>Doctor ID</th>#}
-{#            <th>Name</th>#}
-{#            <th>Patient ID</th>#}
-{#            <th>Name</th>#}
-{#        </tr>#}
-{#    {% for dprel in docPatRels %}#}
-{#        <tr>#}
-{#            <td><a href="{{ url_for('add_edit_doctor_patient_relation',#}
-{#                                    doctorId=dprel.doctor_id,#}
-{#                                    patientId=dprel.patient_id) }}">#}
-{#                    Edit#}
-{#                </a>#}
-{#                ,#}
-{#                <a href="{{ url_for('delete_doctor_patient_relation',#}
-{#                                    doctorId=dprel.doctor_id,#}
-{#                                    patientId=dprel.patient_id) }}">#}
-{#                    Delete#}
-{#                </a>#}
-{#            </td>#}
-{#            <td>{{ dprel.doctor_id }}</td>#}
-{#            <td>{{ dprel.doctor.last_name }},  {{ dprel.doctor.first_name }}</td>#}
-{#            <td>{{ dprel.patient_id }}</td>#}
-{#            <td>{{ dprel.patient.last_name }}, {{ dprel.patient.first_name }}</td>#}
-{#        </tr>#}
-{#    {% endfor %}#}
-{#    </table>#}
+    <table>
+        <tr>
+        {% for header in data[0] %}
+            <th>{{ header }}</th>
+        {% endfor %}
+        </tr>
+        {% for row in data[1:] %}
+        <tr>
+            {% for field in row %}
+            <td>{{ field }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
 
 {% endblock %}

@@ -13,12 +13,16 @@
         <a href="{{ url_for('index') }}">Home</a>
         <a href="{{ url_for('user_management') }}">Users</a>
         <a href="{{ url_for('list_records') }}">Records</a>
-        |
         {% if g.user.is_authenticated() %}
+            {% if g.user.user_class == 'a' %}
+                <a href="{{ url_for('data_analysis') }}">Data Analysis</a>
+            {% endif %}
+            |
             Logged in as '{{ g.user.user_name }}'
             <a href="{{ url_for('person_detail', personId=g.user.person_id) }}">Profile</a>
             <a href="{{ url_for('logout') }}">Logout</a>
         {% else %}
+            |
             <a href="{{ url_for('login') }}">Login</a>
         {% endif %}
     </div>
