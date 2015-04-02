@@ -1,0 +1,26 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{# Top header that lets user select options to display the data. #}
+{% block content %}
+    <h1>Data Analysis</h1>
+    <h3>Select criteria:</h3>
+<form action="" method="post">
+    <p>
+    {{ form.hidden_tag() }}
+
+    {# select by patient and/or test type #}
+    {{ form.patient }} {{ form.patient.label }} <br>
+    {{ form.test_type }} {{ form.test_type.label }}
+    </p>
+    <p>
+
+    {# Select yearly, monthly, or daily for test date #}
+    {{ form.test_date.label }}:
+    {{ form.test_date }}
+    </p>
+    <p><input type="submit" value="View"></p>
+</form>
+    <hr>
+    {% block data %}{% endblock %}
+{% endblock %}
