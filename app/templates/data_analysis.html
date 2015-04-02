@@ -1,13 +1,16 @@
 {# keep selected options visible at top #}
 {% extends "data_analysis_selector.html" %}
 
+{# Build a table to display results #}
 {% block data %}
     <table>
         <tr>
+        {# First row contains column headers #}
         {% for header in data[0] %}
             <th>{{ header }}</th>
         {% endfor %}
         </tr>
+        {# Rest of the data #}
         {% for row in data[1:] %}
         <tr>
             {% for field in row %}
