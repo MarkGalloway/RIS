@@ -22,7 +22,7 @@ def personChoicesForSelectField(persons=models.Person.query.all()):
 
 def diagnosesForSelectField():
     results = models.Record.query.group_by(models.Record.diagnosis).all()
-    choices = []
+    choices = [('all', 'All')]
     for res in results:
         choices.append((res.diagnosis, res.diagnosis))
     return choices
@@ -125,25 +125,33 @@ def selectTableRowsUsingFormForDataAnalysis(form):
 
 
 def selectPatientsUsingFormForReportGenerator(form):
-    print(type(form.diagnosis.data))
-    print(form.diagnosis.data)
-    query = db.session.query(models.Person).join(models.Person.record_patient).group_by(models.Record.diagnosis)
-    if form.diagnosis.data:
-        query.filter(models.Record.diagnosis == form.diagnosis.data)
+    """
+    Creates a list of patients with the selected diagnosis for the date range specified.
+    Used by the Report Generator.
+    :param form: Form containing the selected options.
+    :return: List of rows returned by the query. First row is table header.
+    """
+    query = db.session.query(models.Person).join(models.Person.record_patient).group_by(models.Record.diagnosis)\
+        .order_by(models.Record.test_date)
 
-    if form.start_date.data and form.end_date.data:
-        query.filter(form.start_date.data <= models.Record.test_date,
-                     form.end_date.data >= models.Record.test_date)
-    print(query)
-    resultsList = [["ID", "Name", "Phone", "Diagnosis Date"]]
-    results = query.all()
-    print(len(results))
-    for patient in results:
-        resultsList.append([
-            patient.person_id,
-            patient.last_name + ", " + patient.first_name,
-            patient.phone,
-            patient.record_patient[0].test_date])
+    # filter by diagnosis if not 'all'
+    if form.diagnosis.data != 'all':
+        query = query.filter(models.Record.diagnosis == form.diagnosis.data)
+
+    # filter by date range if specified
+    if form.start_date.data:
+        query = query.filter(form.start_date.data <= models.Record.test_date)
+    if form.end_date.data:
+        query = query.filter(form.end_date.data >= models.Record.test_date)
+
+    # header row
+    resultsList = [["ID", "Last Name", "First Name", "Phone", "Diagnosis Date"]]
+
+    # get the results as tuples rather than Person objects (closer to what we want)
+    results = query.values(models.Person.person_id,
+                           models.Person.last_name,
+                           models.Person.first_name,
+                           models.Person.phone,
+                           models.Record.test_date)
+    resultsList += list(results)
     return resultsList
-    # for patient in patients:
-    #     resultsList.append([patient.person_id, patient.last_name + ", " + patient.first_name, patient.phone, ])
