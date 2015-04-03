@@ -12,7 +12,7 @@ from app.views.util.selectors import selectPatientsUsingFormForReportGenerator, 
 @requires_roles('a')
 def report_generator():
     """Render report generator main page."""
-    form = ReportGenerator(diagnosis='all')
+    form = ReportGenerator(diagnosis=ReportGenerator.ALL_LABEL)
     form.diagnosis.choices = diagnosesForSelectField()
     data = selectPatientsUsingFormForReportGenerator(form)
     return render_template('dynamic_table.html', base='report_generator_selector.html', form=form, data=data)

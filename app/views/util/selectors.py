@@ -1,12 +1,6 @@
-from copy import copy
-
-from sqlalchemy import text, func
+from sqlalchemy import func
 
 from app import db, models
-import logging
-
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 
 def personChoicesForSelectField(persons=models.Person.query.all()):
@@ -65,27 +59,24 @@ def selectTableRowsUsingFormForDataAnalysis(form):
     """
     selectFields = []
 
-    # Populate selectFields and tableHeader from form
+    # Populate selectFields from form
+    # Patient and Test Type
     if form.patient.data:
         selectFields.append(models.Record.patient_id.label(form.patient.label.text))
-        # tableHeader.append(form.patient.label.text)
     if form.test_type.data:
         selectFields.append(models.Record.test_type.label(form.test_type.label.text))
-        # tableHeader.append(form.test_type.label.text)
 
+    # Test Date Period
+    # Hierarchy is Year, Year > Month, Year > Week
     if form.test_date.data != form.ALL_LABEL:
         # just year
         selectFields.append(func.year(models.Record.test_date).label(form.YEAR_LABEL))
-        # year and month
+        # year > month
         if form.test_date.data == form.MONTH_LABEL:
-            # selectFields.append(yearField)
             selectFields.append(func.month(models.Record.test_date).label(form.MONTH_LABEL))
-            # tableHeader.append(month)
-        # year and week
+        # year > week
         if form.test_date.data == form.WEEK_LABEL:
-            # selectFields.append(yearField)
             selectFields.append(func.week(models.Record.test_date).label(form.WEEK_LABEL))
-            # tableHeader.append(week)
 
     # construct query
     query = db.session.query(models.Record).join(models.Image).group_by(*["`" + c.name + "`" for c in selectFields])
@@ -119,7 +110,7 @@ def selectPatientsUsingFormForReportGenerator(form):
         .order_by(models.Record.test_date)
 
     # filter by diagnosis if not 'all'
-    if form.diagnosis.data != 'all':
+    if form.diagnosis.data != form.ALL_LABEL:
         query = query.filter(models.Record.diagnosis == form.diagnosis.data)
 
     # filter by date range if specified

@@ -7,6 +7,8 @@ __author__ = 'colinhunt'
 
 
 class ReportGenerator(Form):
+    ALL_LABEL = 'all'
+
     diagnosis = SelectField('Diagnosis', validators=[DataRequired()])
     start_date = DateField('Start Date', validators=[DataRequired()])
     end_date = DateField('End Date', validators=[DataRequired()])
