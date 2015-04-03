@@ -1,8 +1,12 @@
 from copy import copy
 
-from sqlalchemy import text
+from sqlalchemy import text, func
 
 from app import db, models
+import logging
+
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 
 def personChoicesForSelectField(persons=models.Person.query.all()):
@@ -60,65 +64,43 @@ def selectTableRowsUsingFormForDataAnalysis(form):
     :return: List of rows returned by the query. First row is table header.
     """
     selectFields = []
-    tableHeader = []
 
-    # SQL to create year, month, day fields
-    year = "year(test_date) as year"
-    month = "month(test_date) as month"
-    day = "day(test_date) as day"
-
-    # Populate selectFields and groupByClause from form
+    # Populate selectFields and tableHeader from form
     if form.patient.data:
-        selectFields.append("patient_id")
+        selectFields.append(models.Record.patient_id.label(form.patient.label.text))
+        # tableHeader.append(form.patient.label.text)
     if form.test_type.data:
-        selectFields.append("test_type")
+        selectFields.append(models.Record.test_type.label(form.test_type.label.text))
+        # tableHeader.append(form.test_type.label.text)
 
-    if form.test_date.data:
-        # Copy what has been picked so far
-        tableHeader = copy(selectFields)
+    if form.test_date.data != form.ALL_LABEL:
         # just year
-        if form.test_date.data == "year":
-            selectFields.append(year)
-            tableHeader.append("year")
+        selectFields.append(func.year(models.Record.test_date).label(form.YEAR_LABEL))
         # year and month
-        if form.test_date.data == "month":
-            selectFields.append(year)
-            selectFields.append(month)
-            tableHeader.append("year")
-            tableHeader.append("month")
-        # year and month and day
-        if form.test_date.data == "day":
-            selectFields.append(year)
-            selectFields.append(month)
-            selectFields.append(day)
-            tableHeader.append("year")
-            tableHeader.append("month")
-            tableHeader.append("day")
+        if form.test_date.data == form.MONTH_LABEL:
+            # selectFields.append(yearField)
+            selectFields.append(func.month(models.Record.test_date).label(form.MONTH_LABEL))
+            # tableHeader.append(month)
+        # year and week
+        if form.test_date.data == form.WEEK_LABEL:
+            # selectFields.append(yearField)
+            selectFields.append(func.week(models.Record.test_date).label(form.WEEK_LABEL))
+            # tableHeader.append(week)
 
-    # Format the results for the SQL query
-    if selectFields:
-        selectFields = ",".join(selectFields) + ","
-        groupByClause = "group by " + ",".join(tableHeader)
-    else:
-        selectFields = ""
-        groupByClause = ""
+    # construct query
+    query = db.session.query(models.Record).join(models.Image).group_by(*["`" + c.name + "`" for c in selectFields])
 
-    # Plug in the selectFields and groupByClause to the query
-    query = """
-        SELECT {selectFields} count(*) as num_images
-        from radiology_record r join pacs_images p on r.record_id = p.record_id
-        {groupByClause};
-        """.format(selectFields=selectFields, groupByClause=groupByClause)
+    # Count results as number of images
+    selectFields.append(func.count('*').label("# of Images"))
 
-    # debug
-    print(text(query))
+    # Execute the query with the selected fields
+    results = query.values(*selectFields)
 
-    # execute
-    results = db.engine.execute(text(query))
+    # Reformat as list of rows with a header
+    # Construct header
+    resultsList = [[c.name for c in selectFields]]
 
-    # need to reformat as list of rows with a header
-    tableHeader.append("num_images")
-    resultsList = [tableHeader]
+    # Add results from query
     resultsList += list(results)
 
     return resultsList
@@ -131,6 +113,8 @@ def selectPatientsUsingFormForReportGenerator(form):
     :param form: Form containing the selected options.
     :return: List of rows returned by the query. First row is table header.
     """
+
+    # base query
     query = db.session.query(models.Person).join(models.Person.record_patient).group_by(models.Record.diagnosis)\
         .order_by(models.Record.test_date)
 

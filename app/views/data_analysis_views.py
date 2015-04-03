@@ -12,7 +12,7 @@ from app.views.util.selectors import selectTableRowsUsingFormForDataAnalysis
 @requires_roles('a')
 def data_analysis():
     """Render data analysis main page."""
-    form = DataAnalysis()
+    form = DataAnalysis(test_date='all')
     data = selectTableRowsUsingFormForDataAnalysis(form)
     return render_template('dynamic_table.html', base="data_analysis_selector.html", form=form, data=data)
 
