@@ -1,0 +1,19 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{# Top header that lets user select options to display the data. #}
+{% block content %}
+    <h1>Report Generator</h1>
+    <h3>Select criteria:</h3>
+<form action="" method="post">
+    {{ form.hidden_tag() }}
+
+    {# search by diagnosis and/or date range #}
+    <p>{{ form.diagnosis.label }} {{ form.diagnosis }}</p>
+    {{ form.start_date.label }} {{ form.start_date }}
+    {{ form.end_date.label }} {{ form.end_date }}
+    <p><input type="submit" value="Generate"></p>
+</form>
+    <hr>
+    {% block data %}{% endblock %}
+{% endblock %}

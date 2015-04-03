@@ -20,6 +20,14 @@ def personChoicesForSelectField(persons=models.Person.query.all()):
     return choices
 
 
+def diagnosesForSelectField():
+    results = models.Record.query.group_by(models.Record.diagnosis).all()
+    choices = [('all', 'All')]
+    for res in results:
+        choices.append((res.diagnosis, res.diagnosis))
+    return choices
+
+
 def selectPersonsWhoAreDoctors():
     """
     Helper method to select all persons who are doctors.
@@ -113,4 +121,37 @@ def selectTableRowsUsingFormForDataAnalysis(form):
     resultsList = [tableHeader]
     resultsList += list(results)
 
+    return resultsList
+
+
+def selectPatientsUsingFormForReportGenerator(form):
+    """
+    Creates a list of patients with the selected diagnosis for the date range specified.
+    Used by the Report Generator.
+    :param form: Form containing the selected options.
+    :return: List of rows returned by the query. First row is table header.
+    """
+    query = db.session.query(models.Person).join(models.Person.record_patient).group_by(models.Record.diagnosis)\
+        .order_by(models.Record.test_date)
+
+    # filter by diagnosis if not 'all'
+    if form.diagnosis.data != 'all':
+        query = query.filter(models.Record.diagnosis == form.diagnosis.data)
+
+    # filter by date range if specified
+    if form.start_date.data:
+        query = query.filter(form.start_date.data <= models.Record.test_date)
+    if form.end_date.data:
+        query = query.filter(form.end_date.data >= models.Record.test_date)
+
+    # header row
+    resultsList = [["ID", "Last Name", "First Name", "Phone", "Diagnosis Date"]]
+
+    # get the results as tuples rather than Person objects (closer to what we want)
+    results = query.values(models.Person.person_id,
+                           models.Person.last_name,
+                           models.Person.first_name,
+                           models.Person.phone,
+                           models.Record.test_date)
+    resultsList += list(results)
     return resultsList

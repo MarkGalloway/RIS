@@ -14,5 +14,5 @@ def data_analysis():
     """Render data analysis main page."""
     form = DataAnalysis()
     data = selectTableRowsUsingFormForDataAnalysis(form)
-    return render_template('data_analysis.html', form=form, data=data)
+    return render_template('dynamic_table.html', base="data_analysis_selector.html", form=form, data=data)
 
