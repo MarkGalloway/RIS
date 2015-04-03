@@ -16,6 +16,7 @@
         {% if g.user.is_authenticated() %}
             {% if g.user.user_class == 'a' %}
                 <a href="{{ url_for('data_analysis') }}">Data Analysis</a>
+                <a href="{{ url_for('report_generator') }}">Report Generator</a>
             {% endif %}
             |
             Logged in as '{{ g.user.user_name }}'

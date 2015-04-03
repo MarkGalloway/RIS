@@ -20,6 +20,14 @@ def personChoicesForSelectField(persons=models.Person.query.all()):
     return choices
 
 
+def diagnosesForSelectField():
+    results = models.Record.query.group_by(models.Record.diagnosis).all()
+    choices = []
+    for res in results:
+        choices.append((res.diagnosis, res.diagnosis))
+    return choices
+
+
 def selectPersonsWhoAreDoctors():
     """
     Helper method to select all persons who are doctors.
@@ -114,3 +122,28 @@ def selectTableRowsUsingFormForDataAnalysis(form):
     resultsList += list(results)
 
     return resultsList
+
+
+def selectPatientsUsingFormForReportGenerator(form):
+    print(type(form.diagnosis.data))
+    print(form.diagnosis.data)
+    query = db.session.query(models.Person).join(models.Person.record_patient).group_by(models.Record.diagnosis)
+    if form.diagnosis.data:
+        query.filter(models.Record.diagnosis == form.diagnosis.data)
+
+    if form.start_date.data and form.end_date.data:
+        query.filter(form.start_date.data <= models.Record.test_date,
+                     form.end_date.data >= models.Record.test_date)
+    print(query)
+    resultsList = [["ID", "Name", "Phone", "Diagnosis Date"]]
+    results = query.all()
+    print(len(results))
+    for patient in results:
+        resultsList.append([
+            patient.person_id,
+            patient.last_name + ", " + patient.first_name,
+            patient.phone,
+            patient.record_patient[0].test_date])
+    return resultsList
+    # for patient in patients:
+    #     resultsList.append([patient.person_id, patient.last_name + ", " + patient.first_name, patient.phone, ])
