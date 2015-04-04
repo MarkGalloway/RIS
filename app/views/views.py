@@ -32,9 +32,6 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        # Debug Print
-        flash('Login requested for Username="%s", remember_me=%s' %
-              (form.username.data, str(form.remember_me.data)))
         session['remember_me'] = form.remember_me.data
         return tryLogin(User.query.get(form.username.data), form.password.data)
 
@@ -49,8 +46,9 @@ def logout():
     Log the user out.
     :return: Redirect to index.
     """
+    flash('Goodbye, %s!' % g.user.user_name)
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
 
 @app.route('/testdb')
