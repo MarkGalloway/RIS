@@ -68,15 +68,15 @@ def selectTableRowsUsingFormForDataAnalysis(form):
 
     # Test Date Period
     # Hierarchy is Year, Year > Month, Year > Week
-    if form.test_date.data != form.ALL_LABEL:
+    if form.enable_test_date.data and form.test_date.data != 'None':
         # just year
         selectFields.append(func.year(models.Record.test_date).label(form.YEAR_LABEL))
         # year > month
         if form.test_date.data == form.MONTH_LABEL:
-            selectFields.append(func.month(models.Record.test_date).label(form.MONTH_LABEL))
+            selectFields.append(func.monthname(models.Record.test_date).label(form.MONTH_LABEL))
         # year > week
         if form.test_date.data == form.WEEK_LABEL:
-            selectFields.append(func.week(models.Record.test_date).label(form.WEEK_LABEL))
+            selectFields.append(func.weekofyear(models.Record.test_date).label(form.WEEK_LABEL))
 
     # construct query
     query = db.session.query(models.Record).join(models.Image).group_by(*["`" + c.name + "`" for c in selectFields])

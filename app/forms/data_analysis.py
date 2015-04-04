@@ -6,14 +6,13 @@ __author__ = 'colinhunt'
 
 
 class DataAnalysis(Form):
-    ALL_LABEL = 'All'
     YEAR_LABEL = 'Year'
     MONTH_LABEL = 'Month'
     WEEK_LABEL = 'Week'
 
     patient = BooleanField('Patient', default=False)
-    test_type = BooleanField('Test Type', default=False)
-    test_date = RadioField('Test Date', choices=[(ALL_LABEL, ALL_LABEL),
-                                                 (YEAR_LABEL, YEAR_LABEL),
+    test_type = BooleanField('Test type', default=False)
+    enable_test_date = BooleanField('Period of time', default=False)
+    test_date = RadioField('Test Date', choices=[(YEAR_LABEL, YEAR_LABEL),
                                                  (MONTH_LABEL, MONTH_LABEL),
                                                  (WEEK_LABEL, WEEK_LABEL)])
