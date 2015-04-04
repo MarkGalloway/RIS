@@ -1,5 +1,5 @@
 body            { font-family: sans-serif; background: #eee; margin-left:auto; margin-right:auto; }
-a, h1           { color: #377ba8; }
+a, h1, h3       { color: #377ba8; }
 h1              { font-family: 'Georgia', serif; text-align: center; }
 table, th, td   { border: 1px solid #eee; margin-left:auto; margin-right:auto; padding: 10px;}
 td              { text-align: center; }
@@ -11,3 +11,18 @@ hr              { margin: 2em; }
 .error          { background: #f0d6d6; padding: 0.5em; }
 .section        { text-align: center; }
 .nav-links      { text-align: center; margin-left:auto; margin-right:auto; }
+
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+
+  -webkit-flex-flow: row wrap;
+  justify-content: space-around;
+}
