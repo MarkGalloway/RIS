@@ -68,7 +68,7 @@ def selectTableRowsUsingFormForDataAnalysis(form):
 
     # Test Date Period
     # Hierarchy is Year, Year > Month, Year > Week
-    if form.enable_test_date.data and form.test_date.data != 'None':
+    if form.test_date.data != form.NONE_LABEL:
         # just year
         selectFields.append(func.year(models.Record.test_date).label(form.YEAR_LABEL))
         # year > month

@@ -10,13 +10,12 @@
     {{ form.hidden_tag() }}
 
     {# select by patient and/or test type #}
-    {{ form.patient }} {{ form.patient.label }} <br>
-    {{ form.test_type }} {{ form.test_type.label }} <br>
-
-    {# Select yearly, monthly, or daily for test date #}
-    {{ form.enable_test_date }}
-    {{ form.enable_test_date.label }}:
-    {{ form.test_date }}
+    <div>{{ form.patient }} {{ form.patient.label }}</div>
+    <div style="margin-top: 10px;">{{ form.test_type }} {{ form.test_type.label }}</div>
+    {# Select none, yearly, monthly, or daily for test date #}
+    <div style="margin-left: 25px; margin-top: 10px;">Period of time:
+        {{ form.test_date }}
+    </div>
     </p>
     <p><input type="submit" value="View"></p>
 </form>
