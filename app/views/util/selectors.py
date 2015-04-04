@@ -72,13 +72,18 @@ def selectTableRowsUsingFormForDataAnalysis(form):
     # Hierarchy is Year, Year > Month, Year > Week
     if form.test_date.data != form.NONE_LABEL:
         # just year
-        selectFields.append(func.year(models.Record.test_date).label(form.YEAR_LABEL))
-        # year > month
+        if form.test_date.data == form.YEAR_LABEL:
+            selectFields.append(func.year(models.Record.test_date).label(form.YEAR_LABEL))
+        # month
         if form.test_date.data == form.MONTH_LABEL:
-            selectFields.append(func.monthname(models.Record.test_date).label(form.MONTH_LABEL))
-        # year > week
+            selectFields.append(
+                func.concat(func.monthname(models.Record.test_date), ', ', func.year(models.Record.test_date)).label(
+                    form.MONTH_LABEL))
+        # week
         if form.test_date.data == form.WEEK_LABEL:
-            selectFields.append(func.weekofyear(models.Record.test_date).label(form.WEEK_LABEL))
+            selectFields.append(
+                func.concat(func.weekofyear(models.Record.test_date), ', ', func.year(models.Record.test_date)).label(
+                    form.WEEK_LABEL))
 
     # construct query
     query = db.session.query(models.Record).join(models.Image).group_by(*["`" + c.name + "`" for c in selectFields])
@@ -108,7 +113,7 @@ def selectPatientsUsingFormForReportGenerator(form):
     """
 
     # base query
-    query = db.session.query(models.Person).join(models.Person.record_patient).group_by(models.Record.diagnosis)\
+    query = db.session.query(models.Person).join(models.Person.record_patient).group_by(models.Record.diagnosis) \
         .order_by(models.Record.test_date)
 
     # filter by diagnosis if not 'all'
