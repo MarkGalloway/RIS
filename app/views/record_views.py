@@ -78,9 +78,6 @@ def upload_record():
 
         db.session.commit()
 
-        print("Record ID: " + str(record.record_id))
-        print("Image ID: " + str(image.image_id))
-
         flash(u'Record {} has been saved'.format(record.record_id))
         return redirect(url_for('list_records'))
 
