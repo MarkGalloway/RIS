@@ -18,7 +18,8 @@
                 <a href="{{ url_for('data_analysis') }}">Data Analysis</a>
                 <a href="{{ url_for('report_generator') }}">Report Generator</a>
             {% endif %}
-            |
+            |<form style="display: inline;" action="{{ url_for('search') }}" method="post"  name="search">{{ g.search_form.hidden_tag() }}{{ g.search_form.search(size=20) }}
+<input type="submit" value="Search"></form>
             Logged in as '{{ g.user.user_name }}'
             <a href="{{ url_for('person_detail', personId=g.user.person_id) }}">Profile</a>
             <a href="{{ url_for('logout') }}">Logout</a>
