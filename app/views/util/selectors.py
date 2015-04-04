@@ -122,13 +122,14 @@ def selectPatientsUsingFormForReportGenerator(form):
         query = query.filter(form.end_date.data >= models.Record.test_date)
 
     # header row
-    resultsList = [["ID", "Last Name", "First Name", "Phone", "Diagnosis Date"]]
+    resultsList = [["ID", "Last Name", "First Name", "Phone", "Address", "Diagnosis Date"]]
 
     # get the results as tuples rather than Person objects (closer to what we want)
     results = query.values(models.Person.person_id,
                            models.Person.last_name,
                            models.Person.first_name,
                            models.Person.phone,
+                           models.Person.address,
                            models.Record.test_date)
     resultsList += list(results)
     return resultsList
