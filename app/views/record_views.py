@@ -5,7 +5,7 @@ from werkzeug import secure_filename
 from app import app, db, models
 from app.forms.upload_forms import RecordForm
 from app.views.util.login import requires_roles
-from app.views.util.image import resize_image
+from app.views.util.image import resize_image_thumb, resize_image_regular
 from app.views.util.selectors import personChoicesForSelectField, selectPersonsWhoAreDoctors, selectPersonsWhoAreRadiologists, selectPersonsWhoArePatients
 
 import uuid
@@ -67,8 +67,8 @@ def upload_record():
                 regular_file = os.path.splitext(image_file)[0] + ".regular"
 
                 # Resize
-                resize_image(img, thumb_file, 200, 200)
-                resize_image(img, regular_file, 500, 500)
+                resize_image_thumb(img, thumb_file)
+                resize_image_regular(img, regular_file)
 
                 image = models.Image(record_id=record.record_id,
                                      thumbnail=thumb_file_name.encode('utf-8'),
@@ -110,6 +110,8 @@ def delete_record(id):
 
 
 @app.route('/image/<int:image_id>/full')
+@login_required
+@requires_roles('r', 'a')
 def full_img(image_id):
     """
     Returns a full size of an image from the database as a jpeg.
@@ -121,6 +123,8 @@ def full_img(image_id):
 
 @app.route('/image/<int:image_id>/regular/<template>')
 @app.route('/image/<int:image_id>/regular')
+@login_required
+@requires_roles('r', 'a')
 def regular_img(image_id, template=""):
     """
     Returns a regular of an image from the database as a jpeg.
@@ -134,6 +138,8 @@ def regular_img(image_id, template=""):
 
 
 @app.route('/image/<int:image_id>/thumbnail')
+@login_required
+@requires_roles('r', 'a')
 def thumbnail_img(image_id):
     """
     Returns a thumbnail of an image from the database as a jpeg.
