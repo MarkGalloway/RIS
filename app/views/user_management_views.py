@@ -6,7 +6,7 @@ from flask.ext.login import login_required
 from app import app, db, models
 from app.forms.user_management import UserForm, PersonForm, DoctorPatientForm
 from app.views.util.login import requires_roles, mustMatchOrPrivilegeError
-from app.views.util.selectors import personChoicesForSelectField, selectPersonsWhoAreDoctors
+from app.views.util.selectors import personChoicesForSelectField, selectPersonsWhoAreDoctors, selectPersonsWhoArePatients
 
 
 @app.route('/user_management')
@@ -214,7 +214,8 @@ def add_edit_doctor_patient_relation(doctorId=None, patientId=None):
     doctors = selectPersonsWhoAreDoctors()
     doctorChoices = personChoicesForSelectField(doctors)
 
-    choices = personChoicesForSelectField()
+    patients = selectPersonsWhoArePatients()
+    choices = personChoicesForSelectField(patients)
 
     if editing:
         # setup the template for editing
