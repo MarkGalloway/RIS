@@ -1,0 +1,11 @@
+<!-- extend from base layout -->
+{% extends "base.html" %}
+
+{# Display an image in full-size #}
+{% block content %}
+    <div class="section">
+        <a href="{{ url_for('full_img', image_id=image.image_id) }}">
+            <img src="{{ url_for('regular_img', image_id=image.image_id) }}">
+        </a>
+    </div>
+{% endblock %}
