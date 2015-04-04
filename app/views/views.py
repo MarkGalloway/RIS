@@ -20,7 +20,7 @@ def index():
                            user=user)
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     """

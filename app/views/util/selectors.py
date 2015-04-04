@@ -3,7 +3,7 @@ from sqlalchemy import func
 from app import db, models
 
 
-def personChoicesForSelectField(persons=models.Person.query.all()):
+def personChoicesForSelectField(persons=None):
     """
     Creates select field data for a list of persons.
     Formats the field as "ID - Last, First" to give a unique, readable entry.
@@ -11,6 +11,8 @@ def personChoicesForSelectField(persons=models.Person.query.all()):
         If not supplied, just queries the db for all persons.
     :return: Formatted list of choice tuples.
     """
+    if not persons:
+        persons = models.Person.query.all()
     choices = []
     for person in persons:
         choices.append((person.person_id,
