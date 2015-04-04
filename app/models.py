@@ -1,5 +1,11 @@
 from app import db
 
+import sys
+if sys.version_info >= (3, 0):
+    enable_search = False
+else:
+    enable_search = True
+    import flask.ext.whooshalchemy as whooshalchemy
 
 class Doctor(db.Model):
     """To indicate who is whose family doctor"""
@@ -78,7 +84,7 @@ class User(db.Model):
 class Record(db.Model):
     """To store the radiology records"""
     __tablename__ = 'radiology_record'
-
+    __searchable__ = ['test_type', 'prescriding_date', 'test_date', 'diagnosis', 'description']
     # Fields
     record_id = db.Column(db.Integer, primary_key=True)
     patient_id = db.Column(db.Integer, db.ForeignKey('persons.person_id'))
@@ -112,4 +118,7 @@ class Image(db.Model):
 
     def __repr__(self):
         return '<Pacs Image %r %r>' % (self.image_id, self.record_id)
+
+if enable_search:
+    whooshalchemy.whoosh_index(app, Record)
 
