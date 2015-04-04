@@ -19,6 +19,6 @@ SQLALCHEMY_DATABASE_URI = 'mysql+mysqlconnector://ris_user:r1s_p4ssw0rd@45.56.81
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 # Upload stuffs
-# UPLOAD_FOLDER = '/Users/markgalloway/Documents/images'
-UPLOAD_FOLDER = '/home/mark/static/'
+# UPLOAD_FOLDER = '/Users/markgalloway/Documents/images'  # Local
+UPLOAD_FOLDER = '/home/mark/static/'    # Remote
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB
