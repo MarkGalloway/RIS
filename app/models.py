@@ -34,8 +34,8 @@ class Person(db.Model):
     # Relationships
     users = db.relationship('User', backref='person')
     doctors = db.relationship('Person', secondary='family_doctor',
-                              primaryjoin=person_id==Doctor.patient_id,
-                              secondaryjoin=person_id==Doctor.doctor_id,
+                              primaryjoin=person_id == Doctor.patient_id,
+                              secondaryjoin=person_id == Doctor.doctor_id,
                               backref=db.backref('patients', lazy='dynamic'))
 
     def __repr__(self):
@@ -103,8 +103,9 @@ class Record(db.Model):
 class Image(db.Model):
     """To store the pacs images"""
     __tablename__ = 'pacs_images'
+
     image_id = db.Column(db.Integer, primary_key=True)
-    record_id = db.Column(db.Integer, db.ForeignKey('radiology_record.record_id'), primary_key=True)
+    record_id = db.Column(db.Integer, db.ForeignKey('radiology_record.record_id'))
     thumbnail = db.Column(db.BLOB)
     regular_size = db.Column(db.BLOB)
     full_size = db.Column(db.BLOB)

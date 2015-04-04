@@ -6,36 +6,39 @@
 
 {# Upload a Record #}
 {% block content %}
-  <h1>Upload Record</h1>
-  <form action="" method="post" enctype="multipart/form-data" name="upload_record">
-      {{ form.hidden_tag() }}
+    <h1>Upload Record</h1>
+    <form action="" method="post" enctype="multipart/form-data" name="upload_record">
+        {{ form.hidden_tag() }}
 
-      {# Selector fields #}
-      <p>
-      {{ form.patient_id.label }}:
-      {{ form.patient_id }}
-      </p>
-      <p>
-      {{ form.doctor_id.label }}:
-      {{ form.doctor_id }}
-      <p>
-      {{ form.radiologist_id.label }}:
-      {{ form.radiologist_id }}
-      </p>
+        {# Selector fields #}
+        <p>
+        {{ form.patient_id.label }}:
+        {{ form.patient_id }}
+        </p>
+        <p>
+        {{ form.doctor_id.label }}:
+        {{ form.doctor_id }}
+        <p>
+        {{ form.radiologist_id.label }}:
+        {{ form.radiologist_id }}
+        </p>
 
-      {# Text/Date fields #}
-      {{ formLabelFieldErrors(form.test_type) }}
-      {{ formLabelFieldErrors(form.prescribing_date) }}
-      {{ formLabelFieldErrors(form.test_date) }}
-      {{ formLabelFieldErrors(form.diagnosis) }}
-      {{ formTextAreaLabelFieldErrors(form.description) }}
+        {# Text/Date fields #}
+        {{ formLabelFieldErrors(form.test_type) }}
+        {{ formLabelFieldErrors(form.prescribing_date) }}
+        {{ formLabelFieldErrors(form.test_date) }}
+        {{ formLabelFieldErrors(form.diagnosis) }}
+        {{ formTextAreaLabelFieldErrors(form.description) }}
 
-      {# File Upload field #}
-      <p>
-      {{ form.images.label }}:
-      {{ form.images(multiple="") }}
-      </p>
+        {# File Upload field #}
+        <p>
+        {{ form.images.label }}:
+        {{ form.images(multiple="") }}
+        {% for error in form.images.errors %}
+            <span style="color: red;">* {{ error }}</span>
+        {% endfor %}
+        </p>
 
-      <p><input type="submit" value="Upload"></p>
-  </form>
+        <p><input type="submit" value="Upload"></p>
+    </form>
 {% endblock %}
