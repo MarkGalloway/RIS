@@ -1,11 +1,11 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, SelectField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 
 
 class UserForm(Form):
-    user_name = StringField('Username', validators=[DataRequired()])
-    password = StringField('Password', validators=[DataRequired()])
+    user_name = StringField('Username', validators=[DataRequired(), Length(max=24)])
+    password = StringField('Password', validators=[DataRequired(), Length(max=24)])
     person_id = SelectField('Person ID', validators=[DataRequired()])
     user_class = SelectField('Class',
                              choices=[('a', 'Administrator'),
@@ -15,11 +15,11 @@ class UserForm(Form):
 
 
 class PersonForm(Form):
-    first_name = StringField('First Name', validators=[DataRequired()])
-    last_name = StringField('Last Name', validators=[DataRequired()])
-    address = StringField('Address', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired()])
-    phone = StringField('Phone', validators=[DataRequired()])
+    first_name = StringField('First Name', validators=[DataRequired(), Length(max=24)])
+    last_name = StringField('Last Name', validators=[DataRequired(), Length(max=24)])
+    address = StringField('Address', validators=[DataRequired(), Length(max=128)])
+    email = StringField('Email', validators=[DataRequired(), Length(max=128)])
+    phone = StringField('Phone', validators=[DataRequired(), Length(max=10)])
 
 
 class DoctorPatientForm(Form):

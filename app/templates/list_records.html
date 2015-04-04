@@ -40,7 +40,7 @@
             {% if record.images %}
                 {% for image in record.images %}
 
-                    <li>
+                    <li class="flex-item">
                         <a href="{{ url_for('regular_img', image_id=image.image_id, template=True) }}">
                             <img src="{{ url_for('thumbnail_img', image_id=image.image_id) }}">
                         </a>

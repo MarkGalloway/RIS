@@ -67,8 +67,8 @@ def upload_record():
                 regular_file = os.path.splitext(image_file)[0] + ".regular"
 
                 # Resize
-                resize_image(img, thumb_file, 100, 100)
-                resize_image(img, regular_file, 400, 400)
+                resize_image(img, thumb_file, 200, 200)
+                resize_image(img, regular_file, 500, 500)
 
                 image = models.Image(record_id=record.record_id,
                                      thumbnail=thumb_file_name.encode('utf-8'),
